@@ -1,0 +1,57 @@
+# -----------------------------------------
+# Syntax colouring for ER_OLEDM1_CH1115 library
+# -----------------------------------------
+
+# Datatypes (such as objects)
+ERMCH1115	KEYWORD1
+MultiBuffer	KEYWORD1
+ActiveBuffer	KEYWORD1
+
+#Methods / functions
+
+drawPixel	KEYWORD2
+OLEDupdate	KEYWORD2
+OLEDclearBuffer	KEYWORD2
+OLEDBuffer	KEYWORD2
+OLEDNoBufferGotoXY	KEYWORD2
+OLEDNoBufferChar	KEYWORD2
+OLEDNoBufferString	KEYWORD2
+OLEDbegin	KEYWORD2
+OLEDinit	KEYWORD2
+OLEDReset	KEYWORD2
+OLEDFillScreen	KEYWORD2
+OLEDFillPage	KEYWORD2
+OLEDBitmap	KEYWORD2
+OLEDEnable	KEYWORD2
+OLEDInvert	KEYWORD2
+OLEDFlip	KEYWORD2
+OLEDContrast	KEYWORD2
+OLEDscroll	KEYWORD2
+OLEDscrollSetup	KEYWORD2
+OLEDfadeEffect	KEYWORD2
+OLEDIssleeping	KEYWORD2
+
+drawLine	KEYWORD2
+drawFastVLine	KEYWORD2
+drawFastHLine	KEYWORD2
+drawRect	KEYWORD2
+fillRect	KEYWORD2
+drawCircle	KEYWORD2
+drawCircleHelper	KEYWORD2
+fillCircle	KEYWORD2
+fillCircleHelperKEYWORD2
+drawTriangle	KEYWORD2
+fillTriangle	KEYWORD2
+drawRoundRect	KEYWORD2
+fillRoundRect	KEYWORD2
+drawChar	KEYWORD2
+setCursor	KEYWORD2
+setTextColor	KEYWORD2
+setTextColor	KEYWORD2
+setTextSize	KEYWORD2
+setTextWrap	KEYWORD2
+
+# Constants
+
+FOREGROUND	LITERAL1
+BACKGROUND	LITERAL1
