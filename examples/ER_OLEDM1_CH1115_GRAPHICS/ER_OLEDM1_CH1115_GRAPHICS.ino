@@ -41,7 +41,7 @@ void loop()
 {
 
   // Define a full screen buffer
-  uint8_t  textBuffer[(myOLEDwidth * (myOLEDheight / 8)) + 1]; // 128 X (64/8) + 1 = 1537
+  uint8_t  textBuffer[(myOLEDwidth * (myOLEDheight / 8)) + 1]; // 128 X (64/8) + 1 
 
   // Declare a struct
   MultiBuffer wholescreen;

@@ -6,7 +6,7 @@
 // *****************************
 // NOTES :
 // (1) GPIO is for arduino UNO for other tested MCU see readme.
-// (2) In the <ERM19264_UC1609.h> USER BUFFER OPTION SECTION, at top of file
+// (2) In the <ER_OLEDM1_CH1115.h> USER BUFFER OPTION SECTION, at top of file
 // option SINGLE_BUFFER must be selected and only this option. 
 // (3) This is for hardware SPI for software SPI see ER_OLEDM1_CH1115_SWSPI.ino example.
 // ****************************** 
@@ -44,7 +44,7 @@ void loop()
 
 void DisplayText() 
 {
-   uint8_t  screenBuffer[1537];  // create a full screen buffer (192 * 64/8) + 1
+   uint8_t  screenBuffer[992];  // create a full screen buffer (124 * 64/8) + 1
    myOLED.buffer = (uint8_t*) &screenBuffer;  // Assign the pointer to the buffer
    myOLED.OLEDclearBuffer(); // Clear the buffer
    myOLED.setTextSize(1);

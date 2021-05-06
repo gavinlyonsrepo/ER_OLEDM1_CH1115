@@ -42,7 +42,7 @@ void setup() {
 // ************** MAIN LOOP ***********
 void loop() {
   // Define a full screen buffer
-  uint8_t  textBuffer[(myOLEDwidth * (myOLEDheight / 8)) + 1]; // 192 X (64/8) + 1 = 1537
+  uint8_t  textBuffer[(myOLEDwidth * (myOLEDheight / 8)) + 1]; // 124 X (64/8) + 1 
 
   MultiBuffer window;
   window.screenbitmap = (uint8_t*) &textBuffer;

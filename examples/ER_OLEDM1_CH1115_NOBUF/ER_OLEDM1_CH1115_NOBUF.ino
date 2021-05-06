@@ -3,7 +3,7 @@
 // Description:
 // Test file for ER_OLEDM1_CH1115 library, showing use of "No buffer" mode .
 // in this mode the OLED can be used as a relatively light weight character OLED
-// 8 rows and 216 characters, 7by8 ,font size (192/7 * 64/8 ),
+// 8 rows and 144 characters, 7by8 ,font size (128/7 * 64/8 ),
 // you can also write bitmaps directly to screen in this mode.
 // URL: https://github.com/gavinlyonsrepo/ER_OLEDM1_CH1115
 // *****************************
