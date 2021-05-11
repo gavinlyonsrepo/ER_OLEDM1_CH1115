@@ -10,7 +10,9 @@ Table of contents
   * [Hardware](#hardware)
   * [Features](#features)
   * [Files](#files)
+  * [Tested_MCU](#tested_MCU)
   * [Ports](#ports)
+  * [Issues](#issues)
   
 Overview
 --------------------
@@ -28,14 +30,6 @@ Overview
 
 * Author: Gavin Lyons
 * Arduino IDE: 1.8.10
-
-* Tested on following MCUs.
-
-	1. Arduino  UNO & NANO v3
-	2. ESP8266 
-	3. ESP32 
-	4. STM32 "blue pill"
-
 
 Output
 -----------------------------
@@ -173,7 +167,27 @@ for other MCU's during testing see extras folder, GPIO_MCU_used.txt file.
 | X_ONEBUF| Shows use of single buffer mode | SINGLE_BUFFER | 
 | X_SWSPI | Shows use of software SPI | MULTI_BUFFER | 
 
+
+Tested_MCU
+-------------------------------
+
+Tested on following MCUs.
+
+	1. Arduino  UNO & NANO v3
+	2. ESP8266 
+	3. ESP32 
+	4. STM32 "blue pill"
+
+
 Ports
 -----------------------------
 
 [Raspberry pi , C++](https://github.com/gavinlyonsrepo/ER_OLEDM1_CH1115_RPI)
+
+
+Issues 
+--------------------------
+
+Issues with v1.0.0 , these are corrected in repo but  still exist in v1.0.0 tarball.
+
+1. Typo in single buffer example file  ER_OLEDM1_CH1115_ONEBUF.ino, in line assigning buffer size : screenBuffer[1537];  should be screenBuffer[1024]; . Example file still works, just assigns more memory than it should. 

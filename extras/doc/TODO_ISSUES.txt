@@ -1,3 +1,0 @@
-V 1.0.0 
-
-1. Typo in single buffer example file  ER_OLEDM1_CH1115_ONEBUF.ino, in line assigning buffer size : screenBuffer[1537];  should be screenBuffer[992]; . Example file still works. 

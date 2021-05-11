@@ -44,7 +44,7 @@ void loop()
 
 void DisplayText() 
 {
-   uint8_t  screenBuffer[992];  // create a full screen buffer (124 * 64/8) + 1
+   uint8_t  screenBuffer[1024];  // create a full screen buffer (128 * 64/8) 
    myOLED.buffer = (uint8_t*) &screenBuffer;  // Assign the pointer to the buffer
    myOLED.OLEDclearBuffer(); // Clear the buffer
    myOLED.setTextSize(1);

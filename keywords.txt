@@ -39,7 +39,7 @@ fillRect	KEYWORD2
 drawCircle	KEYWORD2
 drawCircleHelper	KEYWORD2
 fillCircle	KEYWORD2
-fillCircleHelperKEYWORD2
+fillCircleHelper	KEYWORD2
 drawTriangle	KEYWORD2
 fillTriangle	KEYWORD2
 drawRoundRect	KEYWORD2
