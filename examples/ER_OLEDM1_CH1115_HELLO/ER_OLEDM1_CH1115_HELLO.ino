@@ -14,7 +14,7 @@
 
 #include "ER_OLEDM1_CH1115.h"
 
-#define OLEDcontrast 0x80 //Constrast 00 to FF , 0x80 is default. user adjust
+#define OLEDcontrast 0x80 //Contrast 00 to FF , 0x80 is default. user adjust
 #define myOLEDheight 64
 #define myOLEDwidth  128
 
@@ -53,9 +53,10 @@ void loop() {
   myOLED.OLEDclearBuffer();   // Clear active buffer 
 
   myOLED.setTextColor(FOREGROUND);
+  myOLED.setFontNum(1);
   while (1)
   {
-    myOLED.setCursor(0, 32);
+    myOLED.setCursor(20, 20);
     myOLED.print(F("Hello world"));
     myOLED.OLEDupdate();  //write to active buffer
     delay(5000);

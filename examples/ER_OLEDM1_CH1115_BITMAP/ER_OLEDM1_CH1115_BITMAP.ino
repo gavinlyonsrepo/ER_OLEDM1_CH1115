@@ -9,17 +9,17 @@
 
 // (2) In the <ER_OLEDM1_CH1115.h> USER BUFFER OPTION SECTION, setting will change depending on which method you use,
 //test 2 3 & 4 are commented out currently, see  USER OPTION SELECTION below.
-// test (1) OLED bitmap method, ANY setting on , buffer must BE in PROGMEM
-// test (2) OLED buffer method , MULTI_BUFFER or SINGLE_BUFFER setting on , buffer must NOT be in PROGMEM
-// test (3)  multibuffer method , MULTI_BUFFER setting on.  buffer must NOT be in PROGMEM
-// test (4) singlebuffer method, SINGLE_BUFFER  setting on. buffer must NOT be in PROGMEM
+// test (1) OLED bitmap method, ANY setting on , bitmap must BE in PROGMEM
+// test (2) OLED buffer method , MULTI_BUFFER or SINGLE_BUFFER setting on , bitmap must NOT be in PROGMEM
+// test (3)  multibuffer method , MULTI_BUFFER setting on.  bitmap must NOT be in PROGMEM
+// test (4) singlebuffer method, SINGLE_BUFFER  setting on. bitmap must NOT be in PROGMEM
 
 // (3) This is for hardware SPI for software SPI see ER_OLEDM1_CH1115_SWSPI.ino example.
 // ******************************
 
 #include "ER_OLEDM1_CH1115.h"
 
-#define OLEDcontrast 0x80 //Constrast 00 to FF , 0x80 is default. user adjust
+#define OLEDcontrast 0x80 //Contrast 00 to FF , 0x80 is default. user adjust
 #define myOLEDheight 64
 #define myOLEDwidth  128
 
@@ -42,9 +42,18 @@ ERMCH1115  myOLED(DC, RES, CS); //  object , DC, RES, CS
 
 // 'myimage', 128x64px "g lyons" + shapes , SW used to make https://javl.github.io/image2cpp/ vertical addressing
 // OG image at project URL, used in test file to test image function can be removed/modded in an actual program
-
-//const uint8_t fullscreenBitmap[] = {
+#ifdef test1
 const uint8_t PROGMEM fullscreenBitmap[] = {
+#endif
+#ifdef test2
+const uint8_t PROGMEM fullscreenBitmap[] = {
+#endif
+#ifdef test3
+const uint8_t fullscreenBitmap[] = {
+#endif
+#ifdef test4 
+const uint8_t fullscreenBitmap[] = {
+#endif
   0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0xc0, 0xc0, 0xc0, 0xc0, 0xc0, 0xc0, 0xc0, 0xc0, 0xc0,
   0xc0, 0xc0, 0xc0, 0xc0, 0xc0, 0xc0, 0xc0, 0xc0, 0xc0, 0xc0, 0xc0, 0xc0, 0xc0, 0xc0, 0xc0, 0xc0,
   0xc0, 0xc0, 0xc0, 0xc0, 0xc0, 0xc0, 0xc0, 0xc0, 0xc0, 0xc0, 0xc0, 0xc0, 0xc0, 0xc0, 0xc0, 0xc0,

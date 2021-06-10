@@ -30,6 +30,7 @@ OLEDscroll	KEYWORD2
 OLEDscrollSetup	KEYWORD2
 OLEDfadeEffect	KEYWORD2
 OLEDIssleeping	KEYWORD2
+OLEDPowerDown	KEYWORD2
 
 drawLine	KEYWORD2
 drawFastVLine	KEYWORD2
@@ -39,7 +40,7 @@ fillRect	KEYWORD2
 drawCircle	KEYWORD2
 drawCircleHelper	KEYWORD2
 fillCircle	KEYWORD2
-fillCircleHelper	KEYWORD2
+fillCircleHelperKEYWORD2
 drawTriangle	KEYWORD2
 fillTriangle	KEYWORD2
 drawRoundRect	KEYWORD2
@@ -50,6 +51,9 @@ setTextColor	KEYWORD2
 setTextColor	KEYWORD2
 setTextSize	KEYWORD2
 setTextWrap	KEYWORD2
+setFontNum	KEYWORD2
+drawCharBigNum	KEYWORD2
+drawTextBigNum	KEYWORD2
 
 # Constants
 

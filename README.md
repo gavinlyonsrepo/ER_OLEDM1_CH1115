@@ -12,7 +12,6 @@ Table of contents
   * [Files](#files)
   * [Tested_MCU](#tested_MCU)
   * [Ports](#ports)
-  * [Issues](#issues)
   
 Overview
 --------------------
@@ -22,7 +21,7 @@ Overview
 
 1. Arduino library.      
 2. Inverse colour, vertical rotate, sleep, fade effect, horizontal scroll and contrast control. 
-3. Extended ASCII scalable font. 
+3. 5 ASCII fonts
 4. Graphics class included.
 5. 3 different modes: Multi-buffer , single buffer , no buffer.
 6. Bitmaps supported.
@@ -42,8 +41,11 @@ Output Screenshots, From left to right, top to bottom.
 4. Different size and type of fonts 
 5. Available ASCII font printed out 0-127
 6. Extended ASCII font printed out 128-255  
+7. Font 1-4 
+8. Font 5 
 
 ![ output ](https://github.com/gavinlyonsrepo/ER_OLEDM1_CH1115/blob/main/extras/image/output.jpg)
+![ output ](https://github.com/gavinlyonsrepo/ER_OLEDM1_CH1115_RPI/blob/main/extras/image/fontpic.jpg)
 
 Installation
 ------------------------------
@@ -75,8 +77,9 @@ The CH1115 controller chip is a 3.3V device but the ERM LCD module has a "662k" 
 So the ERM LCD module VCC will run at 5V as well if this is present. It was always run it at 3.3 vcc during testing.
 
 **Logic lines**
-The logic lines where ALWAYS connected to 3.3 Volts logic during all testing of library. 
-Are the logic lines 5 volt tolerant? Most likely , did not test as had only two test devices. 
+The logic lines where ALWAYS connected to 3.3 Volts logic during all testing of library.
+ 
+Are the logic lines 5 volt tolerant? Yes, most likely , did not test as had only two test devices. 
 Although the CH1115 chip is a 3.3V device  , The datasheet for the entire OLED module
 says 5V is acceptable but 3.3 typical. 
 
@@ -85,7 +88,7 @@ says 5V is acceptable but 3.3 typical.
 | OLED logic voltage Absolute ratings |  5.5 | n/a |-0.3 |
 | OLED logic voltage Characteristics | 5.0 |  3.3 | 3.0 |
  
-
+ 
 This wiring Diagram from the manufacturer showing hardware setup connected to a 
 3.3 volt system MCU
 
@@ -110,13 +113,40 @@ To switch between modes, user must make a change to the USER BUFFER OPTION SECTI
 
 *fonts*
 
-The ASCII font( ER_OLEDM1_CH1115_font.h file) is truncated by two defines ( USER OPTION section)
-to save memory space, if you wish to include the entire font simply comment these defines in. 
+There are five fonts.
+A print class is available to print out most passed data types.
+The fonts 1-4 are a byte high(at text size 1) scale-able fonts, columns of padding added by SW.
+Font 5 is a special large font but it is numbers only and cannot be scaled(just one size).  
+Font 5 will print just numbers + semi-colons ,  if you print a float using print command
+it will place a space and use a circle for a decimal point.
 
-1. UC_FONT_MOD_ONE (increase 150 bytes) First 0-30 ASCII characters
-2. UC_FONT_MOD_TWO (increase 640 bytes) extended ASCII 127-255
+Font data table: 
 
-The scale-able font is a  5 by 7 ASCII font with padding added by SW. So 7 by 8 in effect. This means: 128/7 * 64/8 = 144 characters. 
+| Font num | Font name | Font size xbyy |  ASCII range | Size in bytes |
+| ------ | ------ | ------ | ------ |  
+| 1 | Default | 5x8 | Full Extended ASCII 0 - 0xFF | 1275 |
+| 2 | Thick   | 7x8 | no lowercase letters , ASCII  0x20 - 0x5A | 406 | 
+| 3 | Seven segment | 4x8 | ASCII  0x20 - 0x7A | 360 |
+| 4 | Wide | 8x8 | no lowercase letters, ASCII 0x20 - 0x5A | 464 |
+| 5 | Big Nums | 16x32 | ASCII 0x30-0x3A ,Numbers + : only | 704 |
+
+By default only Font 1 is commented in and ready to go to save memory.
+So to use a non-default Font (2-5), two steps.
+
+1. Comment in the respective define at top of library header file ER_OLEDM1_CH1115_font.h in the USER FONT OPTION ONE section
+2. Call SetFontNum function and pass it number of respective font.  eg SetFontNum(2)
+
+*font mods*
+
+The default ASCII font (font one) is an extended font, 0-255 characters.
+If you do not need characters 127-255 and wish to save memory space:
+In library header file ER_OLEDM1_CH1115_font.h in the USER FONT OPTION TWO section
+Simply comment this define out. 
+
+1. UC_FONT_MOD_TWO (save 640 bytes) extended ASCII 127-255
+
+You can also remove the first 30 characters if not needed but user will need to change 
+ERMCH1115_ASCII_OFFSET  from 0x00 to 0x20. This will save a further 150 bytes.
 
 *bitmaps*
 
@@ -157,12 +187,10 @@ for other MCU's during testing see extras folder, GPIO_MCU_used.txt file.
 | Examples files ino  | Desc | Buffer mode |
 | ------ | ------ |  ------ |
 | X_HELLO | Helloworld | MULTI_BUFFER | 
+| X_MBUF | Shows use of multi buffer mode | MULTI_BUFFER |
+| X_MISC | Ttext + graphics & misc functions, rotate , scroll,  etc | MULTI_BUFFER |
 | X_BITMAP | Shows use of bitmaps  | Several, see setup notes in file  |
 | X_CLOCK | clock MULTI_BUFFER demo | Several, see setup notes in file |
-| X_GRAPHICS |  Shows use of graphics   | MULTI_BUFFER |
-| X_TXT | Shows use of text in buffer mode   | MULTI_BUFFER |
-| X_MBUF | Shows use of multi buffer mode | MULTI_BUFFER |
-| X_MISC | Shows misc functions, rotate , scroll , sleep invert etc | MULTI_BUFFER |
 | X_NOBUF | Shows use of no buffer text only mode | NO_BUFFER  |
 | X_ONEBUF| Shows use of single buffer mode | SINGLE_BUFFER | 
 | X_SWSPI | Shows use of software SPI | MULTI_BUFFER | 
@@ -178,16 +206,7 @@ Tested on following MCUs.
 	3. ESP32 
 	4. STM32 "blue pill"
 
-
 Ports
 -----------------------------
 
 [Raspberry pi , C++](https://github.com/gavinlyonsrepo/ER_OLEDM1_CH1115_RPI)
-
-
-Issues 
---------------------------
-
-Issues with v1.0.0 , these are corrected in repo but  still exist in v1.0.0 tarball.
-
-1. Typo in single buffer example file  ER_OLEDM1_CH1115_ONEBUF.ino, in line assigning buffer size : screenBuffer[1537];  should be screenBuffer[1024]; . Example file still works, just assigns more memory than it should. 

@@ -35,14 +35,11 @@
 
 // ** DEFINES **
 
-// Fonts setup
-#define ERMCH1115_FONTPADDING  send_data(0x00)
-#define ERMCH1115_FONTWIDTH 5
-#ifdef UC_FONT_MOD_ONE
-	#define ERMCH1115_ASCII_OFFSET 0x00
-#else
-	#define ERMCH1115_ASCII_OFFSET 0x20 //0x20, ASCII character for Space
-#endif
+// Fonts setup no buffer default font
+#define NO_BUFFER_FONTPADDING  send_data(0x00)
+#define NO_BUFFER_FONTWIDTH 5
+#define NO_BUFFER_ASCII_OFFSET 0x00
+
 
 // Display Pixel colours  definition
 #define FOREGROUND  0
@@ -182,7 +179,7 @@ class ERMCH1115 : public ERMCH1115_graphics  {
 #endif
 
 #ifndef NO_BUFFER // Functions NOT needed for no_buffer mode 
-	virtual void drawPixel(int16_t x, int16_t y, uint16_t colour) override;
+	virtual void drawPixel(int16_t x, int16_t y, uint8_t colour) override;
 	void OLEDupdate(void);
 	void OLEDclearBuffer(void);
 	void OLEDBuffer(int16_t x, int16_t y, uint8_t w, uint8_t h, uint8_t* data);
@@ -208,7 +205,8 @@ class ERMCH1115 : public ERMCH1115_graphics  {
 	void OLEDscrollSetup(uint8_t Timeinterval= ERMCH1115_TIME_SET, uint8_t Direction=ERMCH1115_SCROLL_SETUP, uint8_t mode=ERMCH1115_SET_SCROLL_MODE) ;
 	void OLEDfadeEffect(uint8_t bits = ERMCCH1115_BREATHEFFECT_DATA);
 	bool OLEDIssleeping(void);
-
+	void OLEDPowerDown(void);
+	
   private:
 
 	void send_data(uint8_t data);

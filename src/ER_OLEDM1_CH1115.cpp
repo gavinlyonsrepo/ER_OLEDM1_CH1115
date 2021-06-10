@@ -261,6 +261,21 @@ void ERMCH1115::OLEDfadeEffect(uint8_t bits)
  if (isHardwareSPI()) {SPI_TRANSACTION_END}
 }
 
+// Call when powering down
+void ERMCH1115::OLEDPowerDown(void)
+{
+	OLEDEnable(0);
+	ERMCH1115_CD_SetLow ;
+	ERMCH1115_RST_SetLow ;
+	ERMCH1115_CS_SetLow;
+	if(isHardwareSPI() == false)
+	{
+		ERMCH1115_SCLK_SetLow;
+		ERMCH1115_SDA_SetLow ;
+	}
+	_sleep= true;
+}
+
 // Desc: invert the display
 // Param1: bits, 1 invert , 0 normal
 void ERMCH1115::OLEDInvert(uint8_t bits) 
@@ -467,7 +482,7 @@ if (isHardwareSPI()) {SPI_TRANSACTION_END}
 
 // Desc: Draws a Pixel to the screen overides the  graphics library
 // Passed x and y co-ords and colour of pixel.
-void ERMCH1115::drawPixel(int16_t x, int16_t y, uint16_t colour) 
+void ERMCH1115::drawPixel(int16_t x, int16_t y, uint8_t colour) 
 {
 	
 #ifdef MULTI_BUFFER
@@ -525,12 +540,12 @@ void ERMCH1115::OLEDNoBufferChar(unsigned char character)
 {
 	if (isHardwareSPI()) {SPI_TRANSACTION_START}
 	ERMCH1115_CS_SetLow;
-	ERMCH1115_FONTPADDING;
-	for (uint8_t column = 0 ; column <  ERMCH1115_FONTWIDTH ; column++)
+	NO_BUFFER_FONTPADDING;
+	for (uint8_t column = 0 ; column <  NO_BUFFER_FONTWIDTH ; column++)
 	{
-	send_data(pgm_read_byte(custom_font + (((character-ERMCH1115_ASCII_OFFSET)*ERMCH1115_FONTWIDTH)) + column));
+	send_data(pgm_read_byte(CH_Font_One + (((character-NO_BUFFER_ASCII_OFFSET)*NO_BUFFER_FONTWIDTH)) + column));
 	}
-	ERMCH1115_FONTPADDING;
+	NO_BUFFER_FONTPADDING;
 	ERMCH1115_CS_SetHigh;
 	if (isHardwareSPI()) {SPI_TRANSACTION_END}
 }
@@ -545,12 +560,12 @@ void ERMCH1115::OLEDNoBufferString(const  unsigned char *characters)
 	while (*characters)
 	{
 	index = *characters++;
-	ERMCH1115_FONTPADDING;
-	for (uint8_t column = 0 ; column <  ERMCH1115_FONTWIDTH ; column++)
+	NO_BUFFER_FONTPADDING;
+	for (uint8_t column = 0 ; column <  NO_BUFFER_FONTWIDTH ; column++)
 	{
-		send_data(pgm_read_byte(custom_font + (((index-ERMCH1115_ASCII_OFFSET)*ERMCH1115_FONTWIDTH)) + column));
+		send_data(pgm_read_byte(CH_Font_One + (((index-NO_BUFFER_ASCII_OFFSET)*NO_BUFFER_FONTWIDTH)) + column));
 	}
-	ERMCH1115_FONTPADDING;
+	NO_BUFFER_FONTPADDING;
 	
 	};
 	ERMCH1115_CS_SetHigh;

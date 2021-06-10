@@ -15,7 +15,7 @@
 
 #include "ER_OLEDM1_CH1115.h"
 
-#define OLEDcontrast 0x80 //Constrast 00 to FF , 0x80 is default. user adjust
+#define OLEDcontrast 0x80 //Contrast 00 to FF , 0x80 is default. user adjust
 #define myOLEDheight 64
 #define myOLEDwidth  128
 
@@ -28,6 +28,7 @@
 
 ERMCH1115  myOLED(DC, RES, CS); //  object , DC, RST, CS
 
+
 // vars for the test
 static long previousMillis  = 0;
 uint16_t count  = 0;
@@ -36,14 +37,14 @@ bool colour = 1;
 void setup() {
   myOLED.OLEDbegin(OLEDcontrast); // initialize the OLED
   myOLED.OLEDFillScreen(0x00, 0);
+  myOLED.setTextColor(FOREGROUND);
+  myOLED.setTextSize(1);
+  myOLED.setFontNum(1);
 }
 
 // *********** MAIN LOOP ******************
 void loop() {
   static long framerate = 0;
-
-  myOLED.setTextColor(FOREGROUND);
-  myOLED.setTextSize(1);
   uint8_t  screenBuffer[(myOLEDwidth * (myOLEDheight / 8)) / 2]; //(128 * 8)/2 = 512 bytes
 
   MultiBuffer left_side;
@@ -61,13 +62,19 @@ void loop() {
   right_side.xoffset = (myOLEDwidth / 2);
   right_side.yoffset = 0;
 
-  display_Left(&left_side, framerate, count);
+  while(1)
+  {
+    display_Left(&left_side, framerate, count);
+    display_Right(&right_side);
 
-  display_Right(&right_side);
-
-  framerate++;
-  count++;
-  delay(1);
+    framerate++;
+    count++;
+    if (count == 3000)
+    {
+      myOLED.OLEDPowerDown(); // Switch off OLED when test over
+      while(1){delay(10);} // wait here for ever
+    }
+  }
 }
 // *********** END OF MAIN ***********
 
@@ -103,7 +110,7 @@ void display_Left(MultiBuffer* targetbuffer, long currentFramerate, int count)
   myOLED.print(fps);
   myOLED.print(" fps");
   myOLED.setCursor(0, 50);
-  myOLED.print("V 1.0.0");
+  myOLED.print("Version 1.1");
   myOLED.drawFastVLine(92, 0, 63, FOREGROUND);
   myOLED.OLEDupdate();
 }
@@ -116,8 +123,8 @@ void display_Right(MultiBuffer* targetbuffer)
   myOLED.setCursor(0, 0);
   myOLED.print(F("RHS buffer"));
 
-  myOLED.fillRect(0, 10, 20, 20, colour);
-  myOLED.fillCircle(40, 20, 10, !colour);
+  myOLED.fillRect(0, 10, 20, 20-(count/200), colour);
+  myOLED.fillCircle(40, 20, count/200, !colour);
   myOLED.drawRoundRect(10, 40, 40, 20, 10, FOREGROUND);
 
   myOLED.OLEDupdate();

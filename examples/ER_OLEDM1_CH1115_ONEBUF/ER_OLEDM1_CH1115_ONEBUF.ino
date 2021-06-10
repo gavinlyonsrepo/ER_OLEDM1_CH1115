@@ -14,7 +14,7 @@
 #include "ER_OLEDM1_CH1115.h"
 
 
-#define OLEDcontrast 0x80 //Constrast 00 to FF , 0x80 is default. user adjust
+#define OLEDcontrast 0x80 //Contrast 00 to FF , 0x80 is default. user adjust
 
 // GPIO 5-wire SPI interface
 #define RES 8 // GPIO pin number pick any you want

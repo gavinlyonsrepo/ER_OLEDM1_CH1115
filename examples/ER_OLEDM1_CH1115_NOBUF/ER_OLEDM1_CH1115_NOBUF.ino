@@ -12,14 +12,10 @@
 // (2) In the <ER_OLEDM1_CH1115.h> USER BUFFER OPTION SECTION, at top of file
 // option NO_BUFFER must be selected and only this option.
 // (3) This is for hardware SPI for software SPI see ER_OLEDM1_CH1115_SWSPI.ino example.
-// (4) Test 5. , In order to use extended ASCII font (128 -255) ,
-//    Mod file UC_FONT_MOD_TWO <ER_OLEDM1_CH1115_font.h> ( and include it just for this test file)
-// (5) Test 4. In order to use first 30 charcaters of ASCII table 0-30 ,
-//    Mod file UC_FONT_MOD_ONE <ER_OLEDM1_CH1115_font.h> (and include it just for this test file)
-// ******************************
+// (4) Test 5.  (needs UC_FONT_MOD_TWO to be commented in (default) , in font file)
+// ******************
 
 #include "ER_OLEDM1_CH1115.h"
-#include "ER_OLEDM1_CH1115_font.h" // just needed for tests to see font defines status
 
 #define OLEDcontrast 0x80 //Constrast 00 to FF , 0x80 is default. user adjust
 
@@ -64,8 +60,8 @@ void loop() {
 // Test 1 String function and goto function
 // Test 2 clear page function
 // Test 3 character function
-// Test 4 print entire ASCII font with character function 32-127 by default , mod UC_FONT_MOD_TWO for 0-127
-// Test 5 print extended ASCII needs UC_FONT_MOD_TWO  to be commented in , in font file
+// Test 4 print entire ASCII font with character function 0-127
+// Test 5 print extended ASCII (needs UC_FONT_MOD_TWO to be commented in (default) , in font file)
 
 void Tests()
 {
@@ -112,22 +108,19 @@ void Tests()
   myOLED.OLEDNoBufferGotoXY(0, 0);
   uint8_t row = 1;
   char offset = 32;
-#ifdef UC_FONT_MOD_ONE
-  offset = 0;
-#endif
-  for (unsigned char i = offset; i < 126 ; i++)
+
+  for (unsigned char i = 0; i < 126 ; i++)
   {
     if (i % 18 == 0) myOLED.OLEDNoBufferGotoXY(0, row++);
     myOLED.OLEDNoBufferChar(i);
     delay(5);
   }
-  delay(2000);
+  delay(3000);
   myOLED.OLEDFillScreen(0x00, 0); // Clear the screen
 
   // TEST 5 print ASCII font 128-255 with character function
   // For characters after 'z{|}' in ASCII table user can comment in UC_FONT_MOD_TWO in font file
   // (NOTE: this will increase program size)
-#ifdef UC_FONT_MOD_TWO
   myOLED.OLEDNoBufferGotoXY(0, 0);
   row = 1;
   for (unsigned char k = 128; k < 255 ; k++)
@@ -138,6 +131,5 @@ void Tests()
   }
   delay(3000);
   myOLED.OLEDFillScreen(0x00, 0); // Clear the screen
-#endif
 
 }

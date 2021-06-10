@@ -15,7 +15,7 @@
 
 #define myOLEDheight 64
 #define myOLEDwidth  128
-#define OLEDcontrast 0x80 //Constrast 00 to FF , 0x80 is default. user adjust
+#define OLEDcontrast 0x80 //Contrast 00 to FF , 0x80 is default. user adjust
 
 // GPIO 5-wire SPI interface
 #define CS 10  // GPIO pin number pick any you want
@@ -25,7 +25,6 @@
 #define SDA  11 // "
 
 ERMCH1115  myOLED(DC, RES, CS, SCL, SDA); 
-
 
 // Vars for the test
 long startTime ;                    // start time for stop watch
