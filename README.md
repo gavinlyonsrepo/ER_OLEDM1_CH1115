@@ -123,7 +123,7 @@ it will place a space and use a circle for a decimal point.
 Font data table: 
 
 | Font num | Font name | Font size xbyy |  ASCII range | Size in bytes |
-| ------ | ------ | ------ | ------ |  
+| ------ | ------ | ------ | ------ |  ------ | 
 | 1 | Default | 5x8 | Full Extended ASCII 0 - 0xFF | 1275 |
 | 2 | Thick   | 7x8 | no lowercase letters , ASCII  0x20 - 0x5A | 406 | 
 | 3 | Seven segment | 4x8 | ASCII  0x20 - 0x7A | 360 |
@@ -188,7 +188,7 @@ for other MCU's during testing see extras folder, GPIO_MCU_used.txt file.
 | ------ | ------ |  ------ |
 | X_HELLO | Helloworld | MULTI_BUFFER | 
 | X_MBUF | Shows use of multi buffer mode | MULTI_BUFFER |
-| X_MISC | Ttext + graphics & misc functions, rotate , scroll,  etc | MULTI_BUFFER |
+| X_MISC | Text + graphics & misc functions, rotate , scroll,  etc | MULTI_BUFFER |
 | X_BITMAP | Shows use of bitmaps  | Several, see setup notes in file  |
 | X_CLOCK | clock MULTI_BUFFER demo | Several, see setup notes in file |
 | X_NOBUF | Shows use of no buffer text only mode | NO_BUFFER  |
