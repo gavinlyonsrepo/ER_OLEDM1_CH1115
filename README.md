@@ -8,8 +8,7 @@ Table of contents
   * [Output](#output)
   * [Installation](#installation)
   * [Hardware](#hardware)
-  * [Features](#features)
-  * [Files](#files)
+  * [Software](#software)
   * [Tested_MCU](#tested_MCU)
   * [Ports](#ports)
   
@@ -19,10 +18,10 @@ Overview
 * Title : Library to support the ER-OLEDM1.09-1 128X64 OLED Display Module driven by the CH1115 controller for the Arduino eco-system.
 * Description : 
 
-1. Arduino library.      
-2. Inverse colour, vertical rotate, sleep, fade effect, horizontal scroll and contrast control. 
-3. 5 ASCII fonts
-4. Graphics class included.
+1. Arduino eco-system library.      
+2. Invert colour, vertical rotate, sleep, fade effect, horizontal scroll and contrast control  functions supported.
+3. 5 ASCII fonts included.
+4. Graphics support included.
 5. 3 different modes: Multi-buffer , single buffer , no buffer.
 6. Bitmaps supported.
 7. Hardware & software SPI options
@@ -70,27 +69,18 @@ CH1115 is a single-chip CMOS OLED driver with controller for organic light emitt
 | 4 | SDA | Serial data input |
 | 5 | RES | This pin is reset signal input. When the pin is low, initialization of the chip is executed. |
 | 6 | DC | This pin is Data or Command control pin. |
-| 7 | CS | This pin is the chip select input. The chip is enabled for MCU comms only when CS# is pulled low. |
+| 7 | CS | This pin is chip select input. The chip is enabled for MCU comms  when CS is pulled low|
 
 **VCC**
 The CH1115 controller chip is a 3.3V device but the ERM LCD module has a "662k" 3.3V regulator at back.
-So the ERM LCD module VCC will run at 5V as well if this is present. It was always run it at 3.3 vcc during testing.
+So the ERM LCD module VCC will run at 5V. It was always run it at 3.3 vcc during testing.
 
 **Logic lines**
 The logic lines where ALWAYS connected to 3.3 Volts logic during all testing of library.
+ The system can also run at 5 volts logic the manufacture has instruction videos connected to 
+ an  Arduino Mega. 
  
-Are the logic lines 5 volt tolerant? Yes, most likely , did not test as had only two test devices. 
-Although the CH1115 chip is a 3.3V device  , The datasheet for the entire OLED module
-says 5V is acceptable but 3.3 typical. 
-
-| Datasheet Data  | max | Typ | min |
-|---| ---| --- | --- |
-| OLED logic voltage Absolute ratings |  5.5 | n/a |-0.3 |
-| OLED logic voltage Characteristics | 5.0 |  3.3 | 3.0 |
- 
- 
-This wiring Diagram from the manufacturer showing hardware setup connected to a 
-3.3 volt system MCU
+ This wiring Diagram from the manufacturer datasheet showing hardware setup connected to a 3.3 volt system MCU.
 
 ![ wiring ](https://github.com/gavinlyonsrepo/ER_OLEDM1_CH1115/blob/main/extras/image/wiring.jpg)
 
@@ -164,10 +154,6 @@ default is 0x81.
 There is a  Horizontal scroll effect. Whose parameters: Time-interval , direction , mode,
 can be adjusted by passing data to function see "OLEDscrollSetup" function header in .cpp and datasheet for details. defaults are : 6 frames , right , continuous mode.
 
-*Functions*
-
-Detailed information on the functions can be found in comment headers in the X.cpp  files and a list of them in keywords.txt. 
-
 Files
 -------------------
 
@@ -179,7 +165,7 @@ X = ER_OLEDM1_CH1115 in tables below
 | X.cpp |  library  source file  |
 | X_graphics.h | graphics header file |
 | X_graphics.cpp |  graphics source file |
-| X_graphics_font.h | graphics  font  file |
+| X_graphics_font.h |  font data file |
 
 The example files are setup for an arduino UNO/NANO for the pin connections used 
 for other MCU's during testing see extras folder, GPIO_MCU_used.txt file.
