@@ -84,7 +84,7 @@ The logic lines where ALWAYS connected to 3.3 Volts logic during all testing of 
 
 ![ wiring ](https://github.com/gavinlyonsrepo/ER_OLEDM1_CH1115/blob/main/extras/image/wiring.jpg)
 
-Features
+Software
 -------------------------
 
 *SPI*
