@@ -170,6 +170,7 @@ class ERMCH1115 : public ERMCH1115_graphics  {
 
 #ifdef MULTI_BUFFER
    MultiBuffer* ActiveBuffer;
+   void OLEDinitBufferStruct(MultiBuffer *p, uint8_t* mybuffer, uint8_t w,  uint8_t h, int16_t  x, int16_t y); 
 #endif
 
 #ifdef SINGLE_BUFFER

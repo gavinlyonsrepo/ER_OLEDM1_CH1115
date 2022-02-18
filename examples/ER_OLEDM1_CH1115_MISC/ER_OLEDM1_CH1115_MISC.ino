@@ -5,14 +5,14 @@
 // (2) showing use of graphic functions from included graphics library.
 // URL: https://github.com/gavinlyonsrepo/ER_OLEDM1_CH1115
 // *****************************
-// NOTES :
+// NB **** NOTES **** NB :
 // (1) GPIO is for arduino UNO for other tested MCU see readme.
 // (2) In the <ER_OLEDM1_CH1115.h> USER BUFFER OPTION SECTION, at top of file
 // option MULTI_BUFFER must be selected and only this option.
 // (3) This is for hardware SPI for software SPI see ER_OLEDM1_CH1115_SWSPI.ino example.
 // (4) Test 6: In order to use extended ASCII font (128 -255) ,
 //    Mod file UC_FONT_MOD_TWO <ER_OLEDM1_CH1115_font.h> ( and include it just for this test file)
-// (5) Fonts for test 1-6 and A_F default fone one is required for Test 7-10 Fonts 2 ,3 4, and 5 are required.
+// (5) For font test 1-6 , default font one is required, for Test 7-10 Fonts 2 ,3 4, and 5 are required.
 // If non-default fonts are not enabled in font file nothing will appear during these tests.
 // ******************************
 
@@ -47,8 +47,8 @@
 
 #include "ER_OLEDM1_CH1115.h"
 
-#define myOLEDheight 64
-#define myOLEDwidth  128
+#define MYOLEDHEIGHT 64
+#define MYOLEDWIDTH 128
 #define OLEDcontrast 0x80 // Contrast 00 to FF , 0x80 is default. user adjust
 
 #define DisplayDelay1 5000
@@ -71,17 +71,17 @@ void setup()
   delay(1500);
   myOLED.setTextColor(FOREGROUND);
   myOLED.setTextSize(1);
-  myOLED.setFontNum(1);
+  myOLED.setFontNum(CH1115Font_Default);
 }
 
 // ************** MAIN LOOP ***********
 void loop()
 {
   // Define a full screen buffer
-  uint8_t  textBuffer[(myOLEDwidth * (myOLEDheight / 8)) + 1];
+  uint8_t  textBuffer[(MYOLEDWIDTH * (MYOLEDHEIGHT / 8)) + 1];
   MultiBuffer window;
-  window.screenbitmap = (uint8_t*) &textBuffer;
-
+    // Intialise that struct with buffer details (&struct,  buffer, w, h, x-offset,y-offset)
+  myOLED.OLEDinitBufferStruct(&window, textBuffer, MYOLEDWIDTH, MYOLEDHEIGHT, 0, 0);
 
   DisplayText(&window);
   DisplayGraphics(&window);
@@ -171,11 +171,11 @@ void DisplayText(MultiBuffer* targetBuffer)
   myOLED.OLEDclearBuffer();
   
   // Test 7
-  myOLED.setFontNum(1);
+  myOLED.setFontNum(CH1115Font_Default);
   myOLED.setTextSize(1);
   myOLED.setCursor(0, 0);
   myOLED.print("Thick Font:");
-  myOLED.setFontNum(2);
+  myOLED.setFontNum( CH1115Font_Thick );
   myOLED.setCursor(0, 15);
   myOLED.print("1234567890123456");
   myOLED.drawChar(70, 25 , 'H', FOREGROUND, BACKGROUND, 4);
@@ -187,11 +187,11 @@ void DisplayText(MultiBuffer* targetBuffer)
   myOLED.OLEDclearBuffer();
 
   // Test 8
-  myOLED.setFontNum(1);
+  myOLED.setFontNum(CH1115Font_Default );
   myOLED.setTextSize(1);
   myOLED.setCursor(0, 0);
   myOLED.print("7 seg Font:");
-  myOLED.setFontNum(3);
+  myOLED.setFontNum(CH1115Font_Seven_Seg);
   myOLED.setCursor(0, 15);
   myOLED.print("1234567890abcDEF780xyz45");
   myOLED.setCursor(0, 30);
@@ -202,11 +202,11 @@ void DisplayText(MultiBuffer* targetBuffer)
   myOLED.OLEDclearBuffer();
 
   // Test 9
-  myOLED.setFontNum(1);
+  myOLED.setFontNum(CH1115Font_Default );
   myOLED.setTextSize(1);
   myOLED.setCursor(0, 0);
   myOLED.print("Wide Font:");
-  myOLED.setFontNum(4);
+  myOLED.setFontNum(CH1115Font_Wide);
   myOLED.setCursor(0, 15);
   myOLED.print("123456 XYZABC");
   myOLED.setCursor(0, 35);
@@ -217,12 +217,12 @@ void DisplayText(MultiBuffer* targetBuffer)
   myOLED.OLEDclearBuffer();
 
   //Test 10
-   myOLED.setFontNum(1);
+   myOLED.setFontNum(CH1115Font_Default );
   myOLED.setTextSize(1);
   myOLED.setCursor(0, 0);
   myOLED.print("BigNums Font:");
   
-  myOLED.setFontNum(5);
+  myOLED.setFontNum(CH1115Font_Bignum);
   char myString[9] = {'1', '3', ':', '2', '6', ':', '1', '8'};
   myOLED.drawTextBigNum(0, 32, myString , BACKGROUND, FOREGROUND); // Test 10a drawTextBigNum
   myOLED.OLEDupdate();  // Write to the buffer
@@ -296,7 +296,7 @@ void  DisplayGraphics(MultiBuffer* targetBuffer)
 // Functions tests
 void DisplayMiscTests(MultiBuffer* targetBuffer)
 {
-  myOLED.setFontNum(1);
+  myOLED.setFontNum(CH1115Font_Default);
   myOLED.setTextSize(1);
   myOLED.ActiveBuffer =  targetBuffer;
 

@@ -18,9 +18,31 @@
 
 #define swap(a, b) { int16_t t = a; a = b; b = t; }
 
-#define ERMCH1115_ASCII_OFFSET 0x00
-#define ERMCH1115_ASCII_OFFSET_SP 0x20 // Starts at Space
-#define ERMCH1115_ASCII_OFFSET_NUM 0x30 // Starts at number 0
+typedef enum 
+{
+    CH1115Font_Default = 1,
+    CH1115Font_Thick = 2,
+    CH1115Font_Seven_Seg = 3,
+    CH1115Font_Wide = 4,
+    CH1115Font_Bignum = 5,
+}OLED_FONT_TYPE_e;
+
+typedef enum 
+{
+	FONT_W_5 = 5, FONT_W_7 = 7, FONT_W_4 = 4, FONT_W_8 = 8,FONT_W_16= 16
+}OLED_Font_width_e; // width of the font in bytes cols.
+
+typedef enum 
+{
+	FONT_O_EXTEND = 0x00, //   extends ASCII
+	FONT_O_SP = 0x20,  // Starts at Space
+	FONT_O_NUM = 0x30,  // Starts at number '0'
+}OLED_Font_offset_e; // font offset in the ASCII table
+
+typedef enum 
+{
+	FONT_H_8 = 8, FONT_H_16 = 16, FONT_H_32 = 32
+}OLED_Font_height_e; // width of the font in bits
 
 class ERMCH1115_graphics : public Print {
 
@@ -43,7 +65,6 @@ class ERMCH1115_graphics : public Print {
 	virtual void fillRect(int16_t x, int16_t y, int16_t w, int16_t h, uint8_t color);
 	virtual void fillScreen(uint8_t color);
 
-	
 	void drawCircle(int16_t x0, int16_t y0, int16_t r, uint8_t color);
 	void drawCircleHelper(int16_t x0, int16_t y0, int16_t r, uint8_t cornername,
 		uint8_t color);
@@ -58,10 +79,8 @@ class ERMCH1115_graphics : public Print {
 		int16_t radius, uint8_t color);
 	void fillRoundRect(int16_t x0, int16_t y0, int16_t w, int16_t h,
 		int16_t radius, uint8_t color);
-	void drawBitmap(int16_t x, int16_t y, const uint8_t *bitmap,
-		int16_t w, int16_t h, uint8_t color);
-	void drawBitmap(int16_t x, int16_t y, const uint8_t *bitmap,
-		int16_t w, int16_t h, uint8_t color, uint8_t bg);
+	void	drawBitmap(int16_t x, int16_t y, const uint8_t *bitmap,
+			int16_t w, int16_t h, uint8_t color, uint8_t bg);
 	void drawChar(int16_t x, int16_t y, unsigned char c, uint8_t color,
 		uint8_t bg, uint8_t size);
 	void setCursor(int16_t x, int16_t y);
@@ -70,12 +89,14 @@ class ERMCH1115_graphics : public Print {
 	void setTextSize(uint8_t s);
 	void setTextWrap(boolean w);
 	void setRotation(uint8_t r);
+	void	setDrawBitmapAddr(boolean mode);
 	uint8_t getRotation(void) const;
 
 	int16_t height(void) const;
 	int16_t width(void) const;
-
-	void setFontNum(uint8_t FontNumber);
+	OLED_FONT_TYPE_e FontNum;
+	
+	void setFontNum(OLED_FONT_TYPE_e FontNumber);
 	void drawCharBigNum(uint8_t x, uint8_t y, uint8_t c, uint8_t color , uint8_t bg);
 	void drawTextBigNum(uint8_t x, uint8_t y, char *pText, uint8_t color, uint8_t bg);
 	
@@ -93,11 +114,12 @@ class ERMCH1115_graphics : public Print {
 	
 	uint8_t rotation;
 	boolean wrap; // If set, 'wrap' text at right edge of display
+	boolean drawBitmapAddr; // True = vertical , false = horizontal
 	
-	uint8_t _FontNumber = 1;
-	uint8_t _CurrentFontWidth = 5;
-	uint8_t _CurrentFontoffset = 0;
-	uint8_t _CurrentFontheight = 8;
+	uint8_t _FontNumber = CH1115Font_Default;;
+	uint8_t _CurrentFontWidth = FONT_W_5;
+	uint8_t _CurrentFontoffset = FONT_O_EXTEND ;
+	uint8_t _CurrentFontheight = FONT_H_8;
 };
 
 #endif 

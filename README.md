@@ -114,17 +114,17 @@ Font data table:
 
 | Font num | Font name | Font size xbyy |  ASCII range | Size in bytes |
 | ------ | ------ | ------ | ------ |  ------ | 
-| 1 | Default | 5x8 | Full Extended ASCII 0 - 0xFF | 1275 |
-| 2 | Thick   | 7x8 | no lowercase letters , ASCII  0x20 - 0x5A | 406 | 
+| 1 | Default | 5x8 | ASCII 0 - 0xFF Full Extended  | 1275 |
+| 2 | Thick   | 7x8 |  ASCII  0x20 - 0x5A no lowercase letters | 406 | 
 | 3 | Seven segment | 4x8 | ASCII  0x20 - 0x7A | 360 |
-| 4 | Wide | 8x8 | no lowercase letters, ASCII 0x20 - 0x5A | 464 |
-| 5 | Big Nums | 16x32 | ASCII 0x30-0x3A ,Numbers + : only | 704 |
+| 4 | Wide | 8x8 |  ASCII 0x20 - 0x5A no lowercase letters| 464 |
+| 5 | Big Nums | 16x32 | ASCII 0x30-0x3A ,Numbers + : . only | 704 |
 
 By default only Font 1 is commented in and ready to go to save memory.
 So to use a non-default Font (2-5), two steps.
 
 1. Comment in the respective define at top of library header file ER_OLEDM1_CH1115_font.h in the USER FONT OPTION ONE section
-2. Call SetFontNum function and pass it number of respective font.  eg SetFontNum(2)
+2. Call SetFontNum function and pass it enum label of respective font.  eg SetFontNum(CH1115Font_Thick)
 
 *font mods*
 
@@ -135,12 +135,22 @@ Simply comment this define out.
 
 1. UC_FONT_MOD_TWO (save 640 bytes) extended ASCII 127-255
 
-You can also remove the first 30 characters if not needed but user will need to change 
-ERMCH1115_ASCII_OFFSET  from 0x00 to 0x20. This will save a further 150 bytes.
+You can also remove the first 30 characters of default font if not needed but user will need to change  offset in setFontNum function. This will save a further 150 bytes.
 
 *bitmaps*
 
-Bitmaps are written directly to screen, not buffer, Updating the buffer will overwrite them(unless bitmap set to buffer) so to share screen with text and graphics best to divide screen into buffers using multi buffer mode,  See examples files. Bitmaps can be turned to data [here at link]( https://javl.github.io/image2cpp/) , use vertical addressing draw mode. 
+There is a few different ways of displaying bitmaps, 
+
+| Num | Method | Buffer mode |   Data addressing | Note |
+| ------ | ------ | ------ | ------ |  ------ |  
+| 1 | LcdBitmap() | any  | Vertical |  Writes directly to screen , no buffer used. | 
+| 2 | LcdBuffer() | Multi or Single |  Vertical  |  For internal use mostly | 
+| 3 | Multi buffer init  | Multibuffer | Vertical  |  Can be used when initialising a MB | 
+| 4 | Single buffer init | Single | Vertical  |  Can be used when initialising SB | 
+| 5 | drawBitmap() | Multi or Single | Vertical | default,  setDrawBitmapAddr(true) | 
+| 6 | drawBitmap() | Multi or Single |  Horizontal | setDrawBitmapAddr(false) |
+
+See the bitmap example file for more details on each method. Bitmaps can be turned to data [here at link]( https://javl.github.io/image2cpp/) , Bitmaps  should be defined in the program memory and buffers in the data memory, for methods 3 & 4 buffers can be initialised with bitmap data.
 
 *User adjustments*
 
@@ -167,8 +177,7 @@ X = ER_OLEDM1_CH1115 in tables below
 | X_graphics.cpp |  graphics source file |
 | X_graphics_font.h |  font data file |
 
-The example files are setup for an arduino UNO/NANO for the pin connections used 
-for other MCU's during testing see extras folder, GPIO_MCU_used.txt file.
+The example files are setup for an arduino UNO/NANO 
 
 | Examples files ino  | Desc | Buffer mode |
 | ------ | ------ |  ------ |
@@ -185,7 +194,8 @@ for other MCU's during testing see extras folder, GPIO_MCU_used.txt file.
 Tested_MCU
 -------------------------------
 
-Tested on following MCUs.
+Tested on following MCUs. for the pin connections used 
+during testing see extras folder, GPIO_MCU_used.txt file.
 
 1. Arduino  UNO & NANO [Example](https://github.com/gavinlyonsrepo/RF_DATA_LINK)
 2. ESP8266 
@@ -195,6 +205,6 @@ Tested on following MCUs.
 Ports
 -----------------------------
 
-[Raspberry pi , C++](https://github.com/gavinlyonsrepo/ER_OLEDM1_CH1115_RPI)
+Raspberry pi , C++ [URL ](https://github.com/gavinlyonsrepo/ER_OLEDM1_CH1115_RPI)
 
-[PIC-32 ,  C XC32](https://github.com/gavinlyonsrepo/pic_32_projects)
+PIC-32 ,  XC32 [URL](https://github.com/gavinlyonsrepo/pic_32_projects)

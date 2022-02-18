@@ -408,6 +408,25 @@ void ERMCH1115::send_data(uint8_t byte)
 // *******************************************************
 #ifndef NO_BUFFER
 
+// Desc init the Multibuffer struct
+// Param 1 Pointer to a struct
+// Param 2 Pointer to buffer array data(arrays decay to  pointers)
+// Param 3. width of buffer
+// Param 4. height of buffer
+// Param 5. x offset of buffer
+// Param 6. y offset of buffer
+#ifdef MULTI_BUFFER
+void ERMCH1115::OLEDinitBufferStruct(MultiBuffer* mystruct, uint8_t* mybuffer, uint8_t w,  uint8_t h, int16_t  x, int16_t y)
+{
+   mystruct->screenbitmap = mybuffer; // point it to the buffer
+   mystruct->width = w ;
+   mystruct->height = h;
+   mystruct->xoffset = x;
+   mystruct->yoffset = y; 
+}
+#endif
+
+
 //Desc: updates the buffer i.e. writes it to the screen
 void ERMCH1115::OLEDupdate() 
 {

@@ -16,8 +16,8 @@
 #include "ER_OLEDM1_CH1115.h"
 
 #define OLEDcontrast 0x80 //Contrast 00 to FF , 0x80 is default. user adjust
-#define myOLEDheight 64
-#define myOLEDwidth  128
+#define MYOLEDHEIGHT 64
+#define MYOLEDWIDTH 128
 
 // GPIO 5-wire SPI interface
 #define RES 8 // GPIO pin number pick any you want
@@ -45,22 +45,15 @@ void setup() {
 // *********** MAIN LOOP ******************
 void loop() {
   static long framerate = 0;
-  uint8_t  screenBuffer[(myOLEDwidth * (myOLEDheight / 8)) / 2]; //(128 * 8)/2 = 512 bytes
+  uint8_t  screenBuffer[(MYOLEDWIDTH * (MYOLEDHEIGHT / 8)) / 2]; //(128 * 8)/2 = 512 bytes
 
   MultiBuffer left_side;
-  left_side.screenbitmap = (uint8_t*) &screenBuffer;
-  left_side.width = (myOLEDwidth / 2) ;
-  left_side.height = myOLEDheight;
-  left_side.xoffset = 0;
-  left_side.yoffset = 0;
-
+    // Intialise that struct with buffer details (&struct,  buffer, w, h, x-offset,y-offset)
+  myOLED.OLEDinitBufferStruct(&left_side, screenBuffer, MYOLEDWIDTH/2, MYOLEDHEIGHT, 0, 0);
 
   MultiBuffer right_side;
-  right_side.screenbitmap = (uint8_t*) &screenBuffer;
-  right_side.width = (myOLEDwidth / 2);
-  right_side.height = myOLEDheight;
-  right_side.xoffset = (myOLEDwidth / 2);
-  right_side.yoffset = 0;
+    // Intialise that struct with buffer details (&struct,  buffer, w, h, x-offset,y-offset)
+  myOLED.OLEDinitBufferStruct(&right_side, screenBuffer, MYOLEDWIDTH/2, MYOLEDHEIGHT, MYOLEDWIDTH/2, 0);
 
   while(1)
   {
@@ -110,7 +103,7 @@ void display_Left(MultiBuffer* targetbuffer, long currentFramerate, int count)
   myOLED.print(fps);
   myOLED.print(" fps");
   myOLED.setCursor(0, 50);
-  myOLED.print("Version 1.1");
+  myOLED.print("Ver 1.3");
   myOLED.drawFastVLine(92, 0, 63, FOREGROUND);
   myOLED.OLEDupdate();
 }

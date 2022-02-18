@@ -13,8 +13,8 @@
 // ******************************
 #include "ER_OLEDM1_CH1115.h"
 
-#define myOLEDheight 64
-#define myOLEDwidth  128
+#define MYOLEDHEIGHT 64
+#define MYOLEDWIDTH 128
 #define OLEDcontrast 0x80 //Contrast 00 to FF , 0x80 is default. user adjust
 
 // GPIO 5-wire SPI interface
@@ -40,15 +40,14 @@ void setup() {
 
 // ************** MAIN LOOP ***********
 void loop() {
-  // Define a full screen buffer
-  uint8_t  textBuffer[(myOLEDwidth * (myOLEDheight / 8)) + 1]; // 124 X (64/8) + 1 
+  // define a buffer to cover whole screen
+  uint8_t  screenBuffer[MYOLEDWIDTH  * (MYOLEDHEIGHT / 8)]; // 1024 bytes = 128 * 64/8
 
-  MultiBuffer window;
-  window.screenbitmap = (uint8_t*) &textBuffer;
-  window.width = myOLEDwidth;
-  window.height = myOLEDheight;
+  MultiBuffer window;   // Declare a multibuffer struct 
+  // Intialise that struct with buffer details (&struct,  buffer, w, h, x-offset,y-offset)
+  myOLED.OLEDinitBufferStruct(&window, screenBuffer, MYOLEDWIDTH, MYOLEDHEIGHT, 0, 0);
 
-  // Call a function to display text pass struct
+  // Call a function to display text, pass struct
   DisplayText(&window);
 }
 
