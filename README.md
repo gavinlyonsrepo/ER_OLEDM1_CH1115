@@ -77,7 +77,7 @@ So the ERM LCD module VCC will run at 5V. It was always run it at 3.3 vcc during
 
 **Logic lines**
 The logic lines where ALWAYS connected to 3.3 Volts logic during all testing of library.
- The system can also run at 5 volts logic the manufacture has instruction videos connected to 
+ The system can also run at 5 volts logic, the manufacture has instructional videos connected to 
  an  Arduino Mega. 
  
  This wiring Diagram from the manufacturer datasheet showing hardware setup connected to a 3.3 volt system MCU.
@@ -143,8 +143,8 @@ There is a few different ways of displaying bitmaps,
 
 | Num | Method | Buffer mode |   Data addressing | Note |
 | ------ | ------ | ------ | ------ |  ------ |  
-| 1 | LcdBitmap() | any  | Vertical |  Writes directly to screen , no buffer used. | 
-| 2 | LcdBuffer() | Multi or Single |  Vertical  |  For internal use mostly | 
+| 1 | OLEDBitmap() | any  | Vertical |  Writes directly to screen , no buffer used. | 
+| 2 | OLEDBuffer() | Multi or Single |  Vertical  |  For internal use mostly | 
 | 3 | Multi buffer init  | Multibuffer | Vertical  |  Can be used when initialising a MB | 
 | 4 | Single buffer init | Single | Vertical  |  Can be used when initialising SB | 
 | 5 | drawBitmap() | Multi or Single | Vertical | default,  setDrawBitmapAddr(true) | 

@@ -39,7 +39,7 @@ void setup() {
   myOLED.OLEDFillScreen(0x00, 0);
   myOLED.setTextColor(FOREGROUND);
   myOLED.setTextSize(1);
-  myOLED.setFontNum(1);
+  myOLED.setFontNum(CH1115Font_Default);
 }
 
 // *********** MAIN LOOP ******************
