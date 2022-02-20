@@ -11,6 +11,7 @@ Table of contents
   * [Software](#software)
   * [Tested_MCU](#tested_MCU)
   * [Ports](#ports)
+  * [Issues](#issues)
   
 Overview
 --------------------
@@ -72,11 +73,10 @@ CH1115 is a single-chip CMOS OLED driver with controller for organic light emitt
 | 7 | CS | This pin is chip select input. The chip is enabled for MCU comms  when CS is pulled low|
 
 **VCC**
-The CH1115 controller chip is a 3.3V device but the ERM LCD module has a "662k" 3.3V regulator at back.
-So the ERM LCD module VCC will run at 5V. It was always run it at 3.3 vcc during testing.
+The CH1115 controller chip is a 3.3V device but the ERM LCD module has a "662k" 3.3V regulator at back. So the ERM OLED module VCC will also run at 5V. 
 
 **Logic lines**
-The logic lines where ALWAYS connected to 3.3 Volts logic during all testing of library.
+The logic lines where always connected to 3.3 Volts logic during all testing of library.
  The system can also run at 5 volts logic, the manufacture has instructional videos connected to 
  an  Arduino Mega. 
  
@@ -112,13 +112,13 @@ it will place a space and use a circle for a decimal point.
 
 Font data table: 
 
-| Font num | Font name | Font size xbyy |  ASCII range | Size in bytes |
+| Font num | Font enum name | Font size xbyy |  ASCII range | Size in bytes |
 | ------ | ------ | ------ | ------ |  ------ | 
-| 1 | Default | 5x8 | ASCII 0 - 0xFF Full Extended  | 1275 |
-| 2 | Thick   | 7x8 |  ASCII  0x20 - 0x5A no lowercase letters | 406 | 
-| 3 | Seven segment | 4x8 | ASCII  0x20 - 0x7A | 360 |
-| 4 | Wide | 8x8 |  ASCII 0x20 - 0x5A no lowercase letters| 464 |
-| 5 | Big Nums | 16x32 | ASCII 0x30-0x3A ,Numbers + : . only | 704 |
+| 1 | CH1115Font_Default | 5x8 | ASCII 0 - 0xFF, Full Extended  | 1275 |
+| 2 | CH1115Font_Thick   | 7x8 |  ASCII  0x20 - 0x5A, no lowercase letters | 406 | 
+| 3 | CH1115Font_Seven_Seg  | 4x8 | ASCII  0x20 - 0x7A | 360 |
+| 4 | CH1115Font_Wide | 8x8 |  ASCII 0x20 - 0x5A, no lowercase letters| 464 |
+| 5 | CH1115Font_Bignum | 16x32 | ASCII 0x30-0x3A ,Numbers + : . only | 704 |
 
 By default only Font 1 is commented in and ready to go to save memory.
 So to use a non-default Font (2-5), two steps.
@@ -128,7 +128,7 @@ So to use a non-default Font (2-5), two steps.
 
 *font mods*
 
-The default ASCII font (font one) is an extended font, 0-255 characters.
+The default ASCII font (font 1) is an extended font, 0-255 characters.
 If you do not need characters 127-255 and wish to save memory space:
 In library header file ER_OLEDM1_CH1115_font.h in the USER FONT OPTION TWO section
 Simply comment this define out. 
@@ -144,7 +144,7 @@ There is a few different ways of displaying bitmaps,
 | Num | Method | Buffer mode |   Data addressing | Note |
 | ------ | ------ | ------ | ------ |  ------ |  
 | 1 | OLEDBitmap() | any  | Vertical |  Writes directly to screen , no buffer used. | 
-| 2 | OLEDBuffer() | Multi or Single |  Vertical  |  For internal use mostly | 
+| 2 | OLEDBuffer() | Multi or Single |  Vertical  |  Mostly for internal use ... mostly | 
 | 3 | Multi buffer init  | Multibuffer | Vertical  |  Can be used when initialising a MB | 
 | 4 | Single buffer init | Single | Vertical  |  Can be used when initialising SB | 
 | 5 | drawBitmap() | Multi or Single | Vertical | default,  setDrawBitmapAddr(true) | 
@@ -169,7 +169,7 @@ Files
 
 X = ER_OLEDM1_CH1115 in tables below
 
-| Src Files| Desc |
+| Src Files | Description  |
 | ------ | ------ |
 | X.h | library header file  |
 | X.cpp |  library  source file  |
@@ -179,16 +179,16 @@ X = ER_OLEDM1_CH1115 in tables below
 
 The example files are setup for an arduino UNO/NANO 
 
-| Examples files ino  | Desc | Buffer mode |
+| Examples files ino  | Description | Buffer mode |
 | ------ | ------ |  ------ |
-| X_HELLO | Helloworld | MULTI_BUFFER | 
+| X_HELLO | Basic usage | MULTI_BUFFER | 
 | X_MBUF | Shows use of multi buffer mode | MULTI_BUFFER |
-| X_MISC | Text + graphics & misc functions, rotate , scroll,  etc | MULTI_BUFFER |
-| X_BITMAP | Shows use of bitmaps  | Several, see setup notes in file  |
-| X_CLOCK | clock MULTI_BUFFER demo | Several, see setup notes in file |
-| X_NOBUF | Shows use of no buffer text only mode | NO_BUFFER  |
+| X_CLOCK | Shows use of multi buffer mode | MULTI_BUFFER |
+| X_MISC | Fonts + graphics & misc functions, rotate , scroll,  etc | MULTI_BUFFER |
+| X_SWSPI | Shows use of software SPI | MULTI_BUFFER |
+| X_BITMAP | Shows use of bitmaps  | All , see setup notes in file  |
 | X_ONEBUF| Shows use of single buffer mode | SINGLE_BUFFER | 
-| X_SWSPI | Shows use of software SPI | MULTI_BUFFER | 
+| X_NOBUF | Shows use of no buffer text only mode | NO_BUFFER  |
 
 
 Tested_MCU
@@ -208,3 +208,12 @@ Ports
 Raspberry pi , C++ [URL ](https://github.com/gavinlyonsrepo/ER_OLEDM1_CH1115_RPI)
 
 PIC-32 ,  XC32 [URL](https://github.com/gavinlyonsrepo/pic_32_projects)
+
+Issues
+---------------------------------
+
+Minor Typo: In Version 1.3.0 , example file ER_OLEDM1_CH1115_MBUF.ino  Line 42 
+reads: myOLED.setFontNum(1); change it to: myOLED.setFontNum(CH1115Font_Default);
+This typo will just cause compiler warnings on most boards but on some MCU may fail to  compile.
+
+
