@@ -1,4 +1,4 @@
-[![Donate](https://img.shields.io/badge/Donate-PayPal-green.svg)](https://www.paypal.com/paypalme/whitelight976)
+[![Website](https://img.shields.io/badge/Website-Link-blue.svg)](https://gavinlyonsrepo.github.io/)  [![Rss](https://img.shields.io/badge/Subscribe-RSS-yellow.svg)](https://gavinlyonsrepo.github.io//feed.xml)  [![Donate](https://img.shields.io/badge/Donate-PayPal-green.svg)](https://www.paypal.com/paypalme/whitelight976)
 
 ![ OLED ](https://github.com/gavinlyonsrepo/ER_OLEDM1_CH1115/blob/main/extras/image/oled.jpg)
 
@@ -12,7 +12,6 @@ Table of contents
   * [Software](#software)
   * [Tested_MCU](#tested_MCU)
   * [Ports](#ports)
-  * [Issues](#issues)
   
 Overview
 --------------------
@@ -210,11 +209,4 @@ Raspberry pi , C++ [URL ](https://github.com/gavinlyonsrepo/ER_OLEDM1_CH1115_RPI
 
 PIC-32 ,  XC32 [URL](https://github.com/gavinlyonsrepo/pic_32_projects)
 
-Issues
----------------------------------
-
-Minor Typo: In Version 1.3.0 , example file ER_OLEDM1_CH1115_MBUF.ino  Line 42 
-reads: myOLED.setFontNum(1); change it to: myOLED.setFontNum(CH1115Font_Default);
-This typo will just cause compiler warnings on most boards but on some MCU may fail to  compile.
-
-
+RPI PICO RP20404 , C++ SDK [URL](https://github.com/gavinlyonsrepo/ER_OLEDM1_CH1115_PICO)
