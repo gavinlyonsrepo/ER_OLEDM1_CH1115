@@ -11,7 +11,7 @@
 // option MULTI_BUFFER must be selected and only this option.
 // (3) This is for software  SPI for hardware SPI see all other examples.
 // ******************************
-#include "ER_OLEDM1_CH1115.h"
+#include "ER_OLEDM1_CH1115.hpp"
 
 #define MYOLEDHEIGHT 64
 #define MYOLEDWIDTH 128

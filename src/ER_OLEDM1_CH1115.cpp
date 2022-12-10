@@ -6,7 +6,7 @@
 * URL: https://github.com/gavinlyonsrepo/ER_OLEDM1_CH1115
 */
 
-#include "ER_OLEDM1_CH1115.h"
+#include "ER_OLEDM1_CH1115.hpp"
 
 // Class Constructors // 4 off
 // No buffer , Hardware + software SPI
@@ -554,7 +554,7 @@ void ERMCH1115::OLEDNoBufferGotoXY(uint8_t column , uint8_t page)
 }
 
 // Desc: draws passed character.
-// Param1: character 'A' or number in  the ASCII table 1-127(default)
+// Param1: character 'A' or number in  the ASCII table 
 void ERMCH1115::OLEDNoBufferChar(unsigned char character)
 {
 	if (isHardwareSPI()) {SPI_TRANSACTION_START}
@@ -562,7 +562,7 @@ void ERMCH1115::OLEDNoBufferChar(unsigned char character)
 	NO_BUFFER_FONTPADDING;
 	for (uint8_t column = 0 ; column <  NO_BUFFER_FONTWIDTH ; column++)
 	{
-	send_data(pgm_read_byte(CH_Font_One + (((character-NO_BUFFER_ASCII_OFFSET)*NO_BUFFER_FONTWIDTH)) + column));
+		send_data(pgm_read_byte(pFontDefaultptr + (((character-NO_BUFFER_ASCII_OFFSET)*NO_BUFFER_FONTWIDTH)) + column));
 	}
 	NO_BUFFER_FONTPADDING;
 	ERMCH1115_CS_SetHigh;
@@ -582,7 +582,7 @@ void ERMCH1115::OLEDNoBufferString(const  unsigned char *characters)
 	NO_BUFFER_FONTPADDING;
 	for (uint8_t column = 0 ; column <  NO_BUFFER_FONTWIDTH ; column++)
 	{
-		send_data(pgm_read_byte(CH_Font_One + (((index-NO_BUFFER_ASCII_OFFSET)*NO_BUFFER_FONTWIDTH)) + column));
+		send_data(pgm_read_byte(pFontDefaultptr + (((index-NO_BUFFER_ASCII_OFFSET)*NO_BUFFER_FONTWIDTH)) + column));
 	}
 	NO_BUFFER_FONTPADDING;
 	

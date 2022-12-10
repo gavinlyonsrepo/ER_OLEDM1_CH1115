@@ -15,7 +15,7 @@
 // (4) Test 5.  (needs UC_FONT_MOD_TWO to be commented in (default) , in font file)
 // ******************
 
-#include "ER_OLEDM1_CH1115.h"
+#include "ER_OLEDM1_CH1115.hpp"
 
 #define OLEDcontrast 0x80 //Constrast 00 to FF , 0x80 is default. user adjust
 

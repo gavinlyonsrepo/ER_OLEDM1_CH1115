@@ -11,7 +11,7 @@
 // (3) This is for hardware SPI for software SPI see ER_OLEDM1_CH1115_SWSPI.ino example.
 // ****************************** 
 
-#include "ER_OLEDM1_CH1115.h"
+#include "ER_OLEDM1_CH1115.hpp"
 
 
 #define OLEDcontrast 0x80 //Contrast 00 to FF , 0x80 is default. user adjust

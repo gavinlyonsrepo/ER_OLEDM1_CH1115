@@ -47,14 +47,15 @@ fillTriangle	KEYWORD2
 drawRoundRect	KEYWORD2
 fillRoundRect	KEYWORD2
 drawChar	KEYWORD2
+drawText	KEYWORD2
 setCursor	KEYWORD2
 setTextColor	KEYWORD2
 setTextColor	KEYWORD2
 setTextSize	KEYWORD2
 setTextWrap	KEYWORD2
 setFontNum	KEYWORD2
-drawCharBigNum	KEYWORD2
-drawTextBigNum	KEYWORD2
+drawCharNum	KEYWORD2
+drawTextNum	KEYWORD2
 setDrawBitmapAddr	KEYWORD2
 drawBitmap	KEYWORD2
 
@@ -62,8 +63,11 @@ drawBitmap	KEYWORD2
 
 FOREGROUND	LITERAL1
 BACKGROUND	LITERAL1
-CH1115Font_Default	LITERAL1
-CH1115Font_Thick	LITERAL1
-CH1115Font_Seven_Seg	LITERAL1
-CH1115Font_Wide	LITERAL1
-CH1115Font_Bignum	LITERAL1
+OLEDFontType_Default	LITERAL1
+OLEDFontType_Thick	LITERAL1
+OLEDFontType_SevenSeg	LITERAL1
+OLEDFontType_Wide	LITERAL1
+OLEDFontType_Tiny	LITERAL1
+OLEDFontType_Homespun	LITERAL1
+OLEDFontType_Bignum	LITERAL1
+OLEDFontType_Mednum	LITERAL1

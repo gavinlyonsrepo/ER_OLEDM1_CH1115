@@ -1,6 +1,6 @@
 /*
 * Project Name: ERMCH1115
-* File: ERMCH1115.h
+* File: ERMCH1115.hpp
 * Description: ER_OLEDM1 OLED driven by CH1115 controller header file
 * Author: Gavin Lyons.
 * URL: https://github.com/gavinlyonsrepo/ER_OLEDM1_CH1115
@@ -26,9 +26,9 @@
 #endif
 
 #ifdef NO_BUFFER
-   #include "ER_OLEDM1_CH1115_font.h"
+   #include "ER_OLEDM1_CH1115_font.hpp"
 #else
-   #include "ER_OLEDM1_CH1115_graphics.h"
+   #include "ER_OLEDM1_CH1115_graphics.hpp"
 #endif
 
 #include <SPI.h>
@@ -39,7 +39,6 @@
 #define NO_BUFFER_FONTPADDING  send_data(0x00)
 #define NO_BUFFER_FONTWIDTH 5
 #define NO_BUFFER_ASCII_OFFSET 0x00
-
 
 // Display Pixel colours  definition
 #define FOREGROUND  0

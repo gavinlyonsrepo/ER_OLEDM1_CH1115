@@ -13,7 +13,7 @@
 // (3) This is for hardware SPI for software SPI see ER_OLEDM1_CH1115_SWSPI.ino example.
 // ******************************
 
-#include "ER_OLEDM1_CH1115.h"
+#include "ER_OLEDM1_CH1115.hpp"
 
 #define OLEDcontrast 0x80 //Contrast 00 to FF , 0x80 is default. user adjust
 #define MYOLEDHEIGHT 64
@@ -39,7 +39,7 @@ void setup() {
   myOLED.OLEDFillScreen(0x00, 0);
   myOLED.setTextColor(FOREGROUND);
   myOLED.setTextSize(1);
-  myOLED.setFontNum(CH1115Font_Default);
+  myOLED.setFontNum(OLEDFontType_Default);
 }
 
 // *********** MAIN LOOP ******************
@@ -103,7 +103,7 @@ void display_Left(MultiBuffer* targetbuffer, long currentFramerate, int count)
   myOLED.print(fps);
   myOLED.print(" fps");
   myOLED.setCursor(0, 50);
-  myOLED.print("Ver 1.3");
+  myOLED.print("Ver 1.3.2");
   myOLED.drawFastVLine(92, 0, 63, FOREGROUND);
   myOLED.OLEDupdate();
 }

@@ -11,7 +11,7 @@
 // (3) This is for hardware SPI for software SPI see ER_OLEDM1_CH1115_SWSPI.ino example.
 // ******************************
 
-#include "ER_OLEDM1_CH1115.h"
+#include "ER_OLEDM1_CH1115.hpp"
 
 #define MYOLEDHEIGHT 64
 #define MYOLEDWIDTH 128
@@ -137,10 +137,9 @@ void DisplayText()
   myOLED.setTextColor(FOREGROUND);
   myOLED.setTextSize(1);
 
-  uint8_t sec = 0;
+  uint8_t sec = 55;
   uint8_t Hour = 12;
   uint8_t Min = 35;
-  uint8_t Sec = 55;
 
   while (1)
   {
@@ -150,7 +149,6 @@ void DisplayText()
     {
       previousMillis = currentMillis;
       sec++;
-      Sec = sec;
       if (sec == 60)
       {
         Min = Min + 1;
@@ -163,7 +161,7 @@ void DisplayText()
           {
             Hour = 0;
             Min = 0;
-            Sec = 0;
+            sec = 0;
           }
         }
       }
@@ -174,8 +172,8 @@ void DisplayText()
       myOLED.drawChar(48, 1 , value[Min / 10], FOREGROUND, BACKGROUND, 3);
       myOLED.drawChar(66, 1 , value[Min % 10], FOREGROUND, BACKGROUND, 3);
       myOLED.drawChar(80, 1 , ':', FOREGROUND, BACKGROUND, 3);
-      myOLED.drawChar(96, 1 , value[Sec / 10], FOREGROUND, BACKGROUND, 3);
-      myOLED.drawChar(112, 1 , value[Sec % 10], FOREGROUND, BACKGROUND, 3);
+      myOLED.drawChar(96, 1 , value[sec / 10], FOREGROUND, BACKGROUND, 3);
+      myOLED.drawChar(112, 1 , value[sec % 10], FOREGROUND, BACKGROUND, 3);
 
       myOLED.OLEDupdate();
     }
