@@ -1,9 +1,8 @@
-/*
-* Project Name: ER_OLEDM1_CH1115
-* File: ER_OLEDM1_CH1115_font.cpp
-* Description: ER_OLEDM1 OLED driven by CH1115 controller font file 
-* Author: Gavin Lyons.
-* URL: https://github.com/gavinlyonsrepo/ER_OLEDM1_CH1115
+/*!
+	@file ER_OLEDM1_CH1115_font.cpp
+	@brief ER_OLEDM1 OLED driven by CH1115 controller font  data file , 
+	Project Name: ER_OLEDM1_CH1115 , URL: https://github.com/gavinlyonsrepo/ER_OLEDM1_CH1115
+	@author  Gavin Lyons
 */
 
 #include "ER_OLEDM1_CH1115_font.hpp"
@@ -11,8 +10,8 @@
 #ifdef CH1115_Font_One
 
 // *******USER FONT OPTION TWO *************
-// Comment these define in to decrease size of full ASCII font.
-// (decrease 640 bytes) removes extended ASCII 127-255
+/*! Comment this define  UC_FONT_MOD_TWO  to decrease size of full ASCII font.
+(saves 640 bytes) removes extended ASCII 127-255 */
 #define UC_FONT_MOD_TWO 
 //***********************************************
 
@@ -279,7 +278,7 @@ static const  PROGMEM  unsigned char CH_Font_One[]  = {
 
 const unsigned char * pFontDefaultptr = CH_Font_One;
 
-#endif //font one
+#endif // end of font one
 
 #ifdef CH1115_Font_Two
 
@@ -466,7 +465,7 @@ const unsigned char * pFontSevenSegptr = CH_Font_Three;
 // cols left to right 0x00 is  off 0xFF is all on
 // NO LOWERCASE LETTERS
 
-const PROGMEM  unsigned char CH_Font_Four[]  = {
+static const PROGMEM  unsigned char CH_Font_Four[]  = {
 	0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00, //  
 	0x00,0x00,0x00,0x5F,0x00,0x00,0x00,0x00, // !
 	0x00,0x03,0x00,0x03,0x00,0x00,0x00,0x00, // "

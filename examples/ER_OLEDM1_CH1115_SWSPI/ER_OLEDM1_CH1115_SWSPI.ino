@@ -1,30 +1,38 @@
-
-// Example file name : ER_OLEDM1_CH1115_SWSPI.ino
-// Description:
-// Test file for ER_OLEDM1_CH1115 library, showing use of software SPI  mode
-// only difference for user is the constructor used when you instantiate the object and pin definations
-// URL: https://github.com/gavinlyonsrepo/ER_OLEDM1_CH1115
-// *****************************
-// NOTES :
-// (1) GPIO is for arduino UNO for other tested MCU see readme.
-// (2) In the <ER_OLEDM1_CH1115.h> USER BUFFER OPTION SECTION, at top of file
-// option MULTI_BUFFER must be selected and only this option.
-// (3) This is for software  SPI for hardware SPI see all other examples.
-// ******************************
+/*!
+	@file ER_OLEDM1_CH1115_SWSPI.ino
+	@brief Example file for ER_OLEDM1_CH1115 library, showing use of software SPI  mode
+	only difference for user is the constructor used when you instantiate the object and pin definations
+	@author Gavin Lyons
+	@note
+		-# (1) GPIO is for arduino UNO for other tested MCU see readme.
+		-# (2) This is for software  SPI for hardware SPI see all other examples.
+	
+	@test
+		-# Software SPI
+*/
 #include "ER_OLEDM1_CH1115.hpp"
 
-#define MYOLEDHEIGHT 64
-#define MYOLEDWIDTH 128
-#define OLEDcontrast 0x80 //Contrast 00 to FF , 0x80 is default. user adjust
+//Contrast 00 to FF , 0x80 is default. user adjust
+#define OLEDcontrast 0x80 
 
-// GPIO 5-wire SPI interface
+// GPIO 5-wire SW SPI interface
 #define CS 10  // GPIO pin number pick any you want
 #define DC 9 // "
 #define RES 8 // "
 #define SCL 12 // "
 #define SDA  11 // "
 
+// instantiate an OLED object
 ERMCH1115  myOLED(DC, RES, CS, SCL, SDA); 
+
+// Buffer setup
+#define MYOLEDHEIGHT 64
+#define MYOLEDWIDTH 128
+// Define a Buffer
+uint8_t  screenBuffer[MYOLEDWIDTH  * (MYOLEDHEIGHT / 8)]; 
+
+// instantiate an Shared buffer object , only one in this case to cover whole screen
+ERMCH1115_SharedBuffer fullScreen(screenBuffer, MYOLEDWIDTH, MYOLEDHEIGHT, 0, 0);
 
 // Vars for the test
 long startTime ;                    // start time for stop watch
@@ -35,30 +43,22 @@ void setup() {
   delay(50);
   myOLED.OLEDbegin(OLEDcontrast); // initialize the OLED
   myOLED.OLEDFillScreen(0x00, 0); // Fill the screen with zeros
+  myOLED.setTextColor(OLED_WHITE);
+  myOLED.setTextSize(1);
+  myOLED.ActiveBufferPtr =  &fullScreen;
   startTime = millis();
 }
 
 // ************** MAIN LOOP ***********
 void loop() {
-  // define a buffer to cover whole screen
-  uint8_t  screenBuffer[MYOLEDWIDTH  * (MYOLEDHEIGHT / 8)]; // 1024 bytes = 128 * 64/8
-
-  MultiBuffer window;   // Declare a multibuffer struct 
-  // Intialise that struct with buffer details (&struct,  buffer, w, h, x-offset,y-offset)
-  myOLED.OLEDinitBufferStruct(&window, screenBuffer, MYOLEDWIDTH, MYOLEDHEIGHT, 0, 0);
-
-  // Call a function to display text, pass struct
-  DisplayText(&window);
+  DisplayText();
 }
 
 // ************** END OF MAIN ***********
 
-void DisplayText(MultiBuffer* screen)
+void DisplayText()
 {
   int count = 0;
-  myOLED.setTextColor(FOREGROUND);
-  myOLED.setTextSize(1);
-  myOLED.ActiveBuffer =  screen;
   myOLED.OLEDclearBuffer(); // Clear the buffer
   while (1)
   {

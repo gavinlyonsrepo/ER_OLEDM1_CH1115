@@ -1,42 +1,55 @@
+/*!
+	@file  ER_OLEDM1_CH1115_CLOCK.ino
+	@brief Example file for ER_OLEDM1_CH1115 library, showing  example of a clock. just a simple demo. Bitmaps and Shared screen shown.
+	@author Gavin Lyons
 
-// Example file name : ER_OLEDM1_CH1115_CLOCK.ino
-// Description:
-// Test file for ER_OLEDM1_CH1115 library, showing  example of a clock and vertical multibuffer mode. just a simple demo,
-// sharing multibuffers of same size reduces program memory size.
-// URL: https://github.com/gavinlyonsrepo/ER_OLEDM1_CH1115
-// *****************************
-// NOTES :
-// (1) GPIO is for arduino UNO for other tested MCU see readme.
-// (2) In the <ER_OLEDM1_CH1115.h> USER BUFFER OPTION SECTION, at top of file for which buffer to use with which test
-// (3) This is for hardware SPI for software SPI see ER_OLEDM1_CH1115_SWSPI.ino example.
-// ******************************
+	@note
+		-# GPIO is for arduino UNO for other tested MCU see readme.
+		-# This is for hardware SPI for software SPI see ER_OLEDM1_CH1115_SWSPI.ino example.
+	@test
+		-# Clock Demo
+		-# Shared buffer, Multiple screens (2 off) spilt into top and bottom
+*/
+
+// two shared screens sharing one buffer
+// ________________________
+// |      Icons screen    |
+// |______________________|
+// |      Time screen     |
+// |______________________|
+//
 
 #include "ER_OLEDM1_CH1115.hpp"
 
-#define MYOLEDHEIGHT 64
-#define MYOLEDWIDTH 128
-#define OLEDcontrast 0x80 //Constrast 00 to FF , 0x80 is default. user adjust
+//Contrast 00 to FF , 0x80 is default. user adjust
+#define OLEDcontrast 0x80 
 
 // GPIO 5-wire SPI interface
 #define RES 8 // GPIO pin number pick any you want
 #define DC 9 // GPIO pin number pick any you want 
 #define CS 10  // GPIO pin number pick any you want
-// GPIO pin number SCK(UNO 13) , HW SPI , SCK
 // GPIO pin number SDA(UNO 11) , HW SPI , MOSI
-ERMCH1115  myOLED(DC, RES, CS);
+// GPIO pin number SCK(UNO 13) , HW SPI , SCK
 
-// ************ Buffer section *****************
-// Define a half  screen buffer
-uint8_t  halfScreenBuffer[(MYOLEDWIDTH  * (MYOLEDHEIGHT / 8)) / 2]; // half screen buffer 512 bytes
+// Buffer setup
+#define MYOLEDHEIGHT 64
+#define MYOLEDWIDTH 128
+// Define a Buffer
+uint8_t  halfScreenBuffer[(MYOLEDWIDTH * (MYOLEDHEIGHT / 8)) / 2]; //(128 * 8)/2 = 512 bytes half screen 
+// instantiate an OLED object
+ERMCH1115  myOLED(DC, RES, CS); 
+// instantiate two Shared buffer objects , one for each half of screen
+ERMCH1115_SharedBuffer  topHalf(halfScreenBuffer, MYOLEDWIDTH, MYOLEDHEIGHT/2, 0, 0);
+ERMCH1115_SharedBuffer bottomHalf(halfScreenBuffer, MYOLEDWIDTH, MYOLEDHEIGHT/2, 0, MYOLEDHEIGHT/2);
 
 
-// ********* BITMAP SECTION **********
+// ********* BITMAP Test data Section **********
 const PROGMEM uint8_t Signal816[16]  = //mobile signal 16x8px
 {
   0x03, 0x05, 0x09, 0xff, 0x09, 0x05, 0xf3, 0x00, 0xf8, 0x00, 0xfc, 0x00, 0xfe, 0x00, 0xff, 0x00
 };
 
-const PROGMEM uint8_t Msg816[16]  =  //message   // 'msg', 16x8px
+const PROGMEM uint8_t Msg816[16]  =  //message ,'msg', 16x8px
 {
   0x00, 0x00, 0x00, 0xff, 0x85, 0x89, 0x91, 0x91, 0x91, 0x91, 0x89, 0x85, 0xff, 0x00, 0x00, 0x00
 };
@@ -61,10 +74,8 @@ const PROGMEM uint8_t Alarm88[8] =  // 'alarm', 8x8px
   0x83, 0xbd, 0x42, 0x4a, 0x52, 0x52, 0xbd, 0x83
 };
 
-// ********* BITMAP SECTION OVER **********
-
-
-unsigned long previousMillis = 0;        // will store last time  was updated:
+// *** Test timing variables *****
+unsigned long previousMillis = 0;  // will store last time  was updated:
 const long interval = 1000;           // interval  (milliseconds)
 
 // ************* SETUP ***************
@@ -76,19 +87,9 @@ void setup()
   myOLED.OLEDFillScreen(0x00, 0); // Clear the screen
 }
 
-
 // *********** MAIN LOOP ******************
-
 void loop()
 {
-
-  // two buffers
-  // ________________________
-  // |      Icons buffer         |
-  // |______________________|
-  // |      Time buffer         |
-  // |______________________|
-  //
   DisplayTopBar();
   while (1)
   {
@@ -102,39 +103,29 @@ void loop()
 
 void DisplayTopBar()
 {
-  // Declare a struct
-  MultiBuffer iconBar;
-
-  // Define the struct varibles
-  // Intialise that struct with buffer details (&struct,  buffer, w, h, x-offset,y-offset)
-  myOLED.OLEDinitBufferStruct(&iconBar, halfScreenBuffer, MYOLEDWIDTH, MYOLEDHEIGHT/2, 0, 0);
-  myOLED.ActiveBuffer =  &iconBar;   // Set the buffer struct object
+  myOLED.ActiveBufferPtr =  &topHalf;   
 
   myOLED.OLEDclearBuffer(); // Clear the buffer
 
   myOLED.setDrawBitmapAddr(true); // for Bitmap Data Vertical  addressed
-  myOLED.drawBitmap(4, 0, Signal816, 16, 8, FOREGROUND, BACKGROUND);
-  myOLED.drawBitmap(24, 0, Bluetooth88, 8, 8, FOREGROUND, BACKGROUND);
-  myOLED.drawBitmap(40, 0, Msg816, 16, 8, FOREGROUND, BACKGROUND);
-  myOLED.drawBitmap(64, 0, GPRS88, 8, 8, FOREGROUND, BACKGROUND);
-  myOLED.drawBitmap(90, 0, Alarm88, 8, 8, FOREGROUND, BACKGROUND);
-  myOLED.drawBitmap(112, 0, Bat816, 16, 8, FOREGROUND, BACKGROUND);
+  myOLED.drawBitmap(4, 0, Signal816, 16, 8, OLED_WHITE, OLED_BLACK);
+  myOLED.drawBitmap(24, 0, Bluetooth88, 8, 8, OLED_WHITE, OLED_BLACK);
+  myOLED.drawBitmap(40, 0, Msg816, 16, 8, OLED_WHITE, OLED_BLACK);
+  myOLED.drawBitmap(64, 0, GPRS88, 8, 8, OLED_WHITE, OLED_BLACK);
+  myOLED.drawBitmap(90, 0, Alarm88, 8, 8, OLED_WHITE, OLED_BLACK);
+  myOLED.drawBitmap(112, 0, Bat816, 16, 8, OLED_WHITE, OLED_BLACK);
   myOLED.OLEDupdate();
 }
 
 void DisplayText()
 {
-  // Declare a struct
-  MultiBuffer textBox;
-  // Intialise that struct with buffer details (&struct,  buffer, w, h, x-offset,y-offset)
-  myOLED.OLEDinitBufferStruct(&textBox, halfScreenBuffer, MYOLEDWIDTH, MYOLEDHEIGHT/2, 0, MYOLEDHEIGHT/2);
 
-  myOLED.ActiveBuffer =  &textBox;   // Set the buffer struct object
+  myOLED.ActiveBufferPtr =  &bottomHalf;   
   myOLED.OLEDclearBuffer(); // Clear the buffer
 
   char value[10] = {'0', '1', '2', '3', '4', '5', '6', '7', '8', '9'};
 
-  myOLED.setTextColor(FOREGROUND);
+  myOLED.setTextColor(OLED_WHITE);
   myOLED.setTextSize(1);
 
   uint8_t sec = 55;
@@ -166,14 +157,14 @@ void DisplayText()
         }
       }
 
-      myOLED.drawChar(0, 1 ,  value[Hour / 10], FOREGROUND, BACKGROUND, 3);
-      myOLED.drawChar(16, 1 , value[Hour % 10], FOREGROUND, BACKGROUND, 3);
-      myOLED.drawChar(32, 1 , ':', FOREGROUND, BACKGROUND, 3);
-      myOLED.drawChar(48, 1 , value[Min / 10], FOREGROUND, BACKGROUND, 3);
-      myOLED.drawChar(66, 1 , value[Min % 10], FOREGROUND, BACKGROUND, 3);
-      myOLED.drawChar(80, 1 , ':', FOREGROUND, BACKGROUND, 3);
-      myOLED.drawChar(96, 1 , value[sec / 10], FOREGROUND, BACKGROUND, 3);
-      myOLED.drawChar(112, 1 , value[sec % 10], FOREGROUND, BACKGROUND, 3);
+      myOLED.drawChar(0, 1 ,  value[Hour / 10], OLED_WHITE, OLED_BLACK, 3);
+      myOLED.drawChar(16, 1 , value[Hour % 10], OLED_WHITE, OLED_BLACK, 3);
+      myOLED.drawChar(32, 1 , ':', OLED_WHITE, OLED_BLACK, 3);
+      myOLED.drawChar(48, 1 , value[Min / 10], OLED_WHITE, OLED_BLACK, 3);
+      myOLED.drawChar(66, 1 , value[Min % 10], OLED_WHITE, OLED_BLACK, 3);
+      myOLED.drawChar(80, 1 , ':', OLED_WHITE, OLED_BLACK, 3);
+      myOLED.drawChar(96, 1 , value[sec / 10], OLED_WHITE, OLED_BLACK, 3);
+      myOLED.drawChar(112, 1 , value[sec % 10], OLED_WHITE, OLED_BLACK, 3);
 
       myOLED.OLEDupdate();
     }

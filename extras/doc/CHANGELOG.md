@@ -23,3 +23,8 @@
 	* new method "drawText" added
 	* Font data placed in .cpp file 
 	* .h files changed to .hpp
+* Version 1.3.3 May 2023
+	* Added Doxygen style comments to create automated API
+	* Replaced multi-screen struct with a class 
+	* Added Enum font inside class name space
+	* Removed no buffer mode.  

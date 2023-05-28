@@ -1,8 +1,9 @@
-/*
-* Project Name: ER_OLEDM1_CH1115
-* File: ER_OLEDM1_CH1115_graphics.hpp
-* Description: ER_OLEDM1 OLED driven by CH1115controller header file for the graphics functions based 
-* URL: https://github.com/gavinlyonsrepo/ER_OLEDM1_CH1115
+ /*!
+	@file ER_OLEDM1_CH1115_graphics.hpp
+	@brief ER_OLEDM1 OLED driven by CH1115 controller header file
+	for the graphics  based functions.   Project Name: ER_OLEDM1_CH1115
+	 URL: https://github.com/gavinlyonsrepo/ER_OLEDM1_CH1115
+	@author  Gavin Lyons
 */
 
 #ifndef _ER_OLEDM1_CH1115_GRAPHICS_H
@@ -15,56 +16,34 @@
  #include "WProgram.h"
 #endif
 
-#define swap(a, b) { int16_t t = a; a = b; b = t; }
+#define CH1115_Swap(a, b) { int16_t t = a; a = b; b = t; }
 
-typedef enum 
-{
-    OLEDFontType_Default = 1,
-    OLEDFontType_Thick = 2, // NO LOWERCASE
-    OLEDFontType_SevenSeg = 3,
-    OLEDFontType_Wide = 4, // NO LOWERCASE
-    OLEDFontType_Tiny = 5,
-    OLEDFontType_Homespun = 6,
-    OLEDFontType_Bignum = 7, // NUMBERS + : . ,one size
-    OLEDFontType_Mednum = 8   // NUMBERS + : . ,one size
-}OLEDFontType_e;
-
-typedef enum 
-{
-	OLEDFontWidth_3 = 3,
-	OLEDFontWidth_5 = 5, 
-	OLEDFontWidth_7 = 7, 
-	OLEDFontWidth_4 = 4, 
-	OLEDFontWidth_8 = 8,
-	OLEDFontWidth_16 = 16
-}OLEDFontWidth_e; // width of the font in bytes cols.
-
-typedef enum 
-{
-	OLEDFontOffset_Extend = 0x00, //   extends ASCII
-	OLEDFontOffset_Space = 0x20,  // Starts at Space
-	OLEDFontOffset_Number = 0x30,  // Starts at number '0'
-}OLEDFontOffset_e; // font offset in the ASCII table
-
-typedef enum 
-{
-	OLEDFontHeight_8 = 8, 
-	OLEDFontHeight_16 = 16, 
-	OLEDFontHeight_32 = 32
-}OLEDFontHeight_e; // height of the font in bits
-
+/*! @brief Graphics class to hold graphic related functions */
 class ERMCH1115_graphics : public Print {
 
- public:
+public:
 
-	ERMCH1115_graphics(int16_t w, int16_t h); // Constructor
+	/*! Enum to define current font type selected  */ 
+	enum OLEDFontType_e : uint8_t
+	{
+		OLEDFontType_Default = 1,      /**<  (1) default  (FUll ASCII with mods) */
+		OLEDFontType_Thick = 2,         /**<  (2) thick (NO LOWERCASE) */
+		OLEDFontType_SevenSeg = 3,  /**<  (3) seven segment  */
+		OLEDFontType_Wide = 4,          /**<  (4) wide (NO LOWERCASE) */
+		OLEDFontType_Tiny = 5,            /**<  (5) tiny */
+		OLEDFontType_Homespun = 6,  /**<  (6) HomeSpun */
+		OLEDFontType_Bignum = 7,      /**< (7) big numbers  NUMBERS only + : . ,fixed size */
+		OLEDFontType_Mednum = 8     /**< (8) Med numbers NUMBERS + : . , fixed size */
+	};
+ 
+	ERMCH1115_graphics(int16_t w, int16_t h); 
 
 #if ARDUINO >= 100
 	virtual size_t write(uint8_t);
 #else
 	virtual void   write(uint8_t);
 #endif
-	// Defined by the subclass:
+	// implemented in the subclass:
 	virtual void drawPixel(int16_t x, int16_t y, uint8_t color) = 0;
 
 	virtual void drawLine(int16_t x0, int16_t y0, int16_t x1, int16_t y1, uint8_t color);
@@ -110,26 +89,55 @@ class ERMCH1115_graphics : public Print {
 	void drawCharNum(uint8_t x, uint8_t y, uint8_t c, uint8_t color , uint8_t bg);
 	void drawTextNum(uint8_t x, uint8_t y, char *pText, uint8_t color, uint8_t bg);
 	
- protected:
-	const int16_t WIDTH;
-	const int16_t HEIGHT;   // This is the 'raw' display w/h - never changes
-	int16_t _width; 
-	int16_t  _height; // Display w/h as modified by current rotation
-	int16_t  cursor_x; 
-	int16_t  cursor_y;
+protected:
+	const int16_t WIDTH;    /**< This is the 'raw' display w - never changes */
+	const int16_t HEIGHT;   /**< This is the 'raw' display h - never changes*/
+	int16_t _width;               /**< Display w as modified by current rotation*/
+	int16_t  _height;             /**< Display h as modified by current rotation*/
+	int16_t  cursor_x;           /**< Current X co-ord cursor position */
+	int16_t  cursor_y;            /**< Current Y co-ord cursor position */
 	
-	uint8_t textcolor;
-	uint8_t textbgcolor;
-	uint8_t textsize;
+	uint8_t textcolor;             /**< Text foreground color */
+	uint8_t textbgcolor;        /**< Text background color */
+	uint8_t textsize;              /**< Size of text ,fonts 1-6 */
+	 
+	uint8_t rotation;                /**< Rotation of screen 0-3 */
+	boolean wrap;                    /**< If set, 'wrap' text at right edge of display*/
+	boolean drawBitmapAddr; /**< data addressing mode for method drawBitmap, True-vertical , false-horizontal */
 	
-	uint8_t rotation;
-	boolean wrap; // If set, 'wrap' text at right edge of display
-	boolean drawBitmapAddr; // True = vertical , false = horizontal
+	uint8_t _FontNumber = 1;                /**< Holds current font number */
+	uint8_t _CurrentFontWidth = 5;        /**<Holds current font width in bits */
+	uint8_t _CurrentFontoffset = 0x00;  /**<Holds current font ASCII table offset */
+	uint8_t _CurrentFontheight = 8;      /**<Holds current font height in bits */
 	
-	uint8_t _FontNumber = 1;
-	uint8_t _CurrentFontWidth = 5;
-	uint8_t _CurrentFontoffset = 0x00;
-	uint8_t _CurrentFontheight = 8;
+private:
+	
+	/*!  Width of the font in bits .*/
+	enum OLEDFontWidth_e : uint8_t
+	{
+		OLEDFontWidth_3 = 3,    /**< 3 tiny font */
+		OLEDFontWidth_4 = 4,    /**< 4 seven segment font */
+		OLEDFontWidth_5 = 5,    /**< 5 default font */
+		OLEDFontWidth_7 = 7,    /**< 7 homespun & thick font*/
+		OLEDFontWidth_8 = 8,    /**< 8 wide font */
+		OLEDFontWidth_16 = 16 /**< Big and Medium number  font */
+	}; 
+	
+	/*! font offset in the ASCII table */
+	enum OLEDFontOffset_e 
+	{
+		OLEDFontOffset_Extend = 0x00,     /**<   extends ASCII */
+		OLEDFontOffset_Space = 0x20,      /**< Starts at Space  */
+		OLEDFontOffset_Number = 0x30   /**<  Starts at number '0' */
+	}; 
+	
+	/*! height of the font in bits */
+	enum OLEDFontHeight_e : uint8_t
+	{
+		OLEDFontHeight_8 = 8,       /**< 8 font  1-6 at size 1*/
+		OLEDFontHeight_16 = 16,   /**< 16 font 8 */
+		OLEDFontHeight_32 = 32    /**< 32 font 7 */
+	}; 
 };
 
 #endif 

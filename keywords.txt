@@ -4,8 +4,8 @@
 
 # Datatypes (such as objects)
 ERMCH1115	KEYWORD1
-MultiBuffer	KEYWORD1
-ActiveBuffer	KEYWORD1
+ERMCH1115_SharedBuffer	KEYWORD1
+ActiveBufferPtr	KEYWORD1
 
 #Methods / functions
 
@@ -61,8 +61,8 @@ drawBitmap	KEYWORD2
 
 # Constants
 
-FOREGROUND	LITERAL1
-BACKGROUND	LITERAL1
+OLED_WHITE	LITERAL1
+OLED_BLACK	LITERAL1
 OLEDFontType_Default	LITERAL1
 OLEDFontType_Thick	LITERAL1
 OLEDFontType_SevenSeg	LITERAL1

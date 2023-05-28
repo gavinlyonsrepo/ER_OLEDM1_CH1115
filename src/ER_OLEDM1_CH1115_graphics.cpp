@@ -1,10 +1,8 @@
-
-/*
-* Project Name: ER_OLEDM1_CH1115
-* File:ER_OLEDM1_CH1115_graphics.cpp
-* Description: ER_OLEDM1 OLED driven by CH1115 controller header file for the  graphics functions.
-* Author: Gavin Lyons.
-* URL: https://github.com/gavinlyonsrepo/ER_OLEDM1_CH1115
+ /*!
+	@file ER_OLEDM1_CH1115_graphics.cpp
+	@brief ER_OLEDM1 OLED driven by CH1115 controller source file
+	for the graphics  based functions.   Project Name: ER_OLEDM1_CH1115
+	@author  Gavin Lyons
 */
 
 #include "ER_OLEDM1_CH1115_graphics.hpp"
@@ -19,6 +17,11 @@
 #endif
 #endif
 
+/*!
+	@brief init the OLED Graphics class object
+	@param w width defined  in sub-class
+	@param h height defined in sub-class
+ */
 ERMCH1115_graphics::ERMCH1115_graphics(int16_t w, int16_t h):
 	WIDTH(w), HEIGHT(h)
 {
@@ -33,7 +36,13 @@ ERMCH1115_graphics::ERMCH1115_graphics(int16_t w, int16_t h):
 	drawBitmapAddr=true;
 }
 
-// Draw a circle outline
+/*!
+	@brief draws a circle where (x0,y0) are center coordinates an r is circle radius.
+	@param x0 circle center x position
+	@param y0 circle center y position
+	@param r radius of circle
+	@param color The color of the circle
+*/
 void ERMCH1115_graphics::drawCircle(int16_t x0, int16_t y0, int16_t r,
 	uint8_t color) {
 	int16_t f = 1 - r;
@@ -68,6 +77,9 @@ void ERMCH1115_graphics::drawCircle(int16_t x0, int16_t y0, int16_t r,
 	}
 }
 
+/*!
+	@brief Used internally by drawRoundRect
+*/
 void ERMCH1115_graphics::drawCircleHelper( int16_t x0, int16_t y0,
 							 int16_t r, uint8_t cornername, uint8_t color) {
 	int16_t f     = 1 - r;
@@ -104,13 +116,22 @@ void ERMCH1115_graphics::drawCircleHelper( int16_t x0, int16_t y0,
 	}
 }
 
+/*!
+	@brief fills a circle where (x0,y0) are center coordinates an r is circle radius.
+	@param x0 circle center x position
+	@param y0 circle center y position
+	@param r radius of circle
+	@param color color of the circle 
+*/
 void ERMCH1115_graphics::fillCircle(int16_t x0, int16_t y0, int16_t r,
 									uint8_t color) {
 	drawFastVLine(x0, y0-r, 2*r+1, color);
 	fillCircleHelper(x0, y0, r, 3, 0, color);
 }
 
-// Used to do circles and roundrects
+/*!
+	@brief Used internally by fill circle fillRoundRect and fillcircle
+*/
 void ERMCH1115_graphics::fillCircleHelper(int16_t x0, int16_t y0, int16_t r,
 		uint8_t cornername, int16_t delta, uint8_t color) {
 
@@ -141,19 +162,26 @@ void ERMCH1115_graphics::fillCircleHelper(int16_t x0, int16_t y0, int16_t r,
 	}
 }
 
-// Bresenham's algorithm - thx wikpedia
+/*!
+	@brief draws a line from (x0,y0) to (x1,y1).
+	@param x0 x start coordinate
+	@param y0 y start coordinate
+	@param x1 x end coordinate
+	@param y1 y end coordinate
+	@param color color to draw line
+*/
 void ERMCH1115_graphics::drawLine(int16_t x0, int16_t y0,
 								int16_t x1, int16_t y1,
 								uint8_t color) {
 	int16_t steep = abs(y1 - y0) > abs(x1 - x0);
 	if (steep) {
-		swap(x0, y0);
-		swap(x1, y1);
+		CH1115_Swap(x0, y0);
+		CH1115_Swap(x1, y1);
 	}
 
 	if (x0 > x1) {
-		swap(x0, x1);
-		swap(y0, y1);
+		CH1115_Swap(x0, x1);
+		CH1115_Swap(y0, y1);
 	}
 
 	int16_t dx, dy;
@@ -183,7 +211,14 @@ void ERMCH1115_graphics::drawLine(int16_t x0, int16_t y0,
 	}
 }
 
-// Draw a rectangle
+/*!
+	@brief draws rectangle at (x,y) where h is height and w is width of the rectangle.
+	@param x x start coordinate
+	@param y y start coordinate
+	@param w width of the rectangle
+	@param h height of the rectangle
+	@param color color to draw  rect
+*/
 void ERMCH1115_graphics::drawRect(int16_t x, int16_t y,
 								int16_t w, int16_t h,
 								uint8_t color) {
@@ -193,18 +228,40 @@ void ERMCH1115_graphics::drawRect(int16_t x, int16_t y,
 	drawFastVLine(x+w-1, y, h, color);
 }
 
+/*!
+	@brief Draws a vertical line starting at (x,y) with height h.
+	@param x The starting x coordinate
+	@param y The starting y coordinate
+	@param h The height of the line
+	@param color The color of the line
+*/
 void ERMCH1115_graphics::drawFastVLine(int16_t x, int16_t y,
 								 int16_t h, uint8_t color) {
 	// Update in subclasses if desired!
 	drawLine(x, y, x, y+h-1, color);
 }
 
+/*!
+	@brief Draws a horizontal line starting at (x,y) with width w.
+	@param x The starting x coordinate
+	@param y The starting y coordinate
+	@param w The width of the line
+	@param color The color of the line 
+*/
 void ERMCH1115_graphics::drawFastHLine(int16_t x, int16_t y,
 								 int16_t w, uint8_t color) {
 	// Update in subclasses if desired!
 	drawLine(x, y, x+w-1, y, color);
 }
 
+/*!
+	@brief fills a rectangle starting from coordinates (x,y) with width of w and height of h.
+	@param x x coordinate
+	@param y y coordinate
+	@param w width of the rectangle
+	@param h height of the rectangle
+	@param color color to fill  rectangle 
+*/
 void ERMCH1115_graphics::fillRect(int16_t x, int16_t y, int16_t w, int16_t h,
 								uint8_t color) {
 	// Update in subclasses if desired!
@@ -213,11 +270,23 @@ void ERMCH1115_graphics::fillRect(int16_t x, int16_t y, int16_t w, int16_t h,
 	}
 }
 
+/*!
+	@brief Fills the whole screen with a given color.
+	@param  color color to fill screen
+*/
 void ERMCH1115_graphics::fillScreen(uint8_t color) {
 	fillRect(0, 0, _width, _height, color);
 }
 
-// Draw a rounded rectangle
+/*!
+	@brief draws a rectangle with rounded edges
+	@param x x start coordinate
+	@param y y start coordinate
+	@param w width of the rectangle
+	@param h height of the rectangle
+	@param r radius of the rounded edges
+	@param color color to draw rectangle 
+*/
 void ERMCH1115_graphics::drawRoundRect(int16_t x, int16_t y, int16_t w,
 	int16_t h, int16_t r, uint8_t color) {
 	drawFastHLine(x+r  , y    , w-2*r, color); // Top
@@ -231,7 +300,15 @@ void ERMCH1115_graphics::drawRoundRect(int16_t x, int16_t y, int16_t w,
 	drawCircleHelper(x+r    , y+h-r-1, r, 8, color);
 }
 
-// Fill a rounded rectangle
+/*!
+	@brief Fills a rectangle with rounded edges
+	@param x x start coordinate
+	@param y y start coordinate
+	@param w width of the rectangle
+	@param h height of the rectangle
+	@param r  radius of the rounded edges
+	@param color color to fill round  rectangle 
+*/
 void ERMCH1115_graphics::fillRoundRect(int16_t x, int16_t y, int16_t w,
 								 int16_t h, int16_t r, uint8_t color) {
 	// smarter version
@@ -242,7 +319,16 @@ void ERMCH1115_graphics::fillRoundRect(int16_t x, int16_t y, int16_t w,
 	fillCircleHelper(x+r    , y+r, r, 2, h-2*r-1, color);
 }
 
-// Draw a triangle
+/*!
+	@brief draws a triangle of coordinates (x0,y0), (x1,y1) and (x2,y2).
+	@param x0 x start coordinate point 1
+	@param y0 y start coordinate point 1
+	@param x1 x start coordinate point 2
+	@param y1 y start coordinate point 2
+	@param x2 x start coordinate point 3
+	@param y2 y start coordinate point 3
+	@param color color to draw triangle 
+*/
 void ERMCH1115_graphics::drawTriangle(int16_t x0, int16_t y0,
 								int16_t x1, int16_t y1,
 								int16_t x2, int16_t y2, uint8_t color) {
@@ -251,7 +337,16 @@ void ERMCH1115_graphics::drawTriangle(int16_t x0, int16_t y0,
 	drawLine(x2, y2, x0, y0, color);
 }
 
-// Fill a triangle
+/*!
+	@brief Fills a triangle of coordinates (x0,y0), (x1,y1) and (x2,y2).
+	@param x0 x start coordinate point 1
+	@param y0 y start coordinate point 1
+	@param x1 x start coordinate point 2
+	@param y1 y start coordinate point 2
+	@param x2 x start coordinate point 3
+	@param y2 y start coordinate point 3
+	@param color color to fill  triangle
+*/
 void ERMCH1115_graphics::fillTriangle ( int16_t x0, int16_t y0,
 									int16_t x1, int16_t y1,
 									int16_t x2, int16_t y2, uint8_t color) {
@@ -259,13 +354,13 @@ void ERMCH1115_graphics::fillTriangle ( int16_t x0, int16_t y0,
 	int16_t a, b, y, last;
 
 	if (y0 > y1) {
-		swap(y0, y1); swap(x0, x1);
+		CH1115_Swap(y0, y1); CH1115_Swap(x0, x1);
 	}
 	if (y1 > y2) {
-		swap(y2, y1); swap(x2, x1);
+		CH1115_Swap(y2, y1); CH1115_Swap(x2, x1);
 	}
 	if (y0 > y1) {
-		swap(y0, y1); swap(x0, x1);
+		CH1115_Swap(y0, y1); CH1115_Swap(x0, x1);
 	}
 
 	if(y0 == y2) { 
@@ -298,7 +393,7 @@ void ERMCH1115_graphics::fillTriangle ( int16_t x0, int16_t y0,
 		sa += dx01;
 		sb += dx02;
 
-		if(a > b) swap(a,b);
+		if(a > b) CH1115_Swap(a,b);
 		drawFastHLine(a, y, b-a+1, color);
 	}
 
@@ -310,18 +405,24 @@ void ERMCH1115_graphics::fillTriangle ( int16_t x0, int16_t y0,
 		sa += dx12;
 		sb += dx02;
 
-		if(a > b) swap(a,b);
+		if(a > b) CH1115_Swap(a,b);
 		drawFastHLine(a, y, b-a+1, color);
 	}
 }
 
-
-// Draw a 1-bit color bitmap at the specified x, y position from the
-// provided bitmap buffer (must be PROGMEM memory) using colour as the
-// foreground colour and bg as the background colour.
-// Variable drawBitmapAddr controls data addressing
-// drawBitmapAddr  = true Vertical  data addressing
-// drawBitmapAddr  = false Horizontal data addressing
+/*!
+	@brief Draw a 1-bit color bitmap 
+	@param x x co-ord position
+	@param y y co-ord posiiton a
+	@param bitmap pointer to bitmap data (must be PROGMEM memory) 
+	@param w width of the bitmap 
+	@param h height of the bitmap 
+	@param color foreground colour 
+	@param bg background colour.
+	@note Variable drawBitmapAddr controls data addressing
+		-# drawBitmapAddr  = true Vertical  data addressing
+		-# drawBitmapAddr  = false Horizontal data addressing
+*/
 void ERMCH1115_graphics::drawBitmap(int16_t x, int16_t y,
 						const uint8_t *bitmap, int16_t w, int16_t h,
 						uint8_t color, uint8_t bg) {
@@ -371,6 +472,10 @@ if (drawBitmapAddr== true)
 } // end of elseif
 }
 
+/*!
+	@brief: called by the print class after it converts the data to a character
+	@param c character
+*/
 #if ARDUINO >= 100
 size_t ERMCH1115_graphics::write(uint8_t c) {
 #else
@@ -436,7 +541,16 @@ void ERMCH1115_graphics::write(uint8_t c) {
 #endif
 }
 
-// Draw a character
+/*!
+	@brief  writes a char (c) on the OLED
+	@param  x X coordinate
+	@param  y Y coordinate
+	@param  c The ASCII character
+	@param color  color
+	@param bg background color
+	@param size 1-x
+	@note for font #1-6 only
+*/
 void ERMCH1115_graphics::drawChar(int16_t x, int16_t y, unsigned char c,
 								uint8_t color, uint8_t bg, uint8_t size) {
 
@@ -497,32 +611,62 @@ void ERMCH1115_graphics::drawChar(int16_t x, int16_t y, unsigned char c,
 	}
 }
 
+/*! 
+	@brief set the cursor position  
+	@param x X co-ord position 
+	@param y Y co-ord position
+*/
 void ERMCH1115_graphics::setCursor(int16_t x, int16_t y) {
 	cursor_x = x;
 	cursor_y = y;
 }
 
+/*! 
+	@brief set the text size , starts at 1 
+	@param s Size of text 1-X 
+*/
 void ERMCH1115_graphics::setTextSize(uint8_t s) {
 	textsize = (s > 0) ? s : 1;
 }
 
+/*! 
+	@brief set the text color  
+	@param c Color fo text 
+*/
 void ERMCH1115_graphics::setTextColor(uint8_t c) {
 	textcolor = textbgcolor = c;
 }
 
+/*! 
+	@brief set the text color  
+	@param c Color of text foreground
+	@param b color of background of text 
+*/
 void ERMCH1115_graphics::setTextColor(uint8_t c, uint8_t b) {
 	textcolor   = c;
 	textbgcolor = b; 
 }
 
+/*!
+	@brief turn on or off screen wrap of the text (fonts 1-6)
+	@param w TRUE on
+*/
 void ERMCH1115_graphics::setTextWrap(boolean w) {
 	wrap = w;
 }
 
+/*!
+	@brief Gets rotation value 0-3
+	@return value 0-3 for rotation 0-3 is mapped to  0 90 180 270 degrees
+*/
 uint8_t ERMCH1115_graphics::getRotation(void) const {
 	return rotation;
 }
 
+/*!
+	@brief Sets rotation value 0-3
+	@param x value 0-3 for rotation 0-3 is mapped to  0 90 180 270 degrees
+*/
 void ERMCH1115_graphics::setRotation(uint8_t x) {
 	rotation = (x & 3);
 	switch(rotation) {
@@ -539,27 +683,38 @@ void ERMCH1115_graphics::setRotation(uint8_t x) {
 	}
 }
 
-// Return the size of the display (per current rotation)
+
+/*!
+	@brief Gets the width of the display (per current rotation)
+	@return width member of display in pixels 
+*/
 int16_t ERMCH1115_graphics::width(void) const {
 	return _width;
 }
  
+/*!
+	@brief Gets the height of the display (per current rotation)
+	@return height member of display in pixels 
+*/
 int16_t ERMCH1115_graphics::height(void) const {
 	return _height;
 }
 
-//Func Desc : sets the data addressing mode in drawBitmap function.
-//Param 1 boolean mode  , true default
-// True =  bitmap data vertically addressed 
-// False = bitmap data horizontally addressed 
+/*!
+	@brief sets the data addressing mode in drawBitmap function.
+	@param  mode boolean mode  , true default
+		-# True =  bitmap data vertically addressed 
+		-# False = bitmap data horizontally addressed 
+*/
 void ERMCH1115_graphics::setDrawBitmapAddr(boolean mode) {
 	drawBitmapAddr = mode;
 }
 
-// Desc :  Set the font number
-// Param1: fontnumber enum 1-8
-// 1=default 2=thick 3=seven segment 4=wide 5=tiny 6=homespun 7=bignums 8=mednums 
-
+/*!
+	@brief   Set the current font type
+	@param FontNumber 1-8 enum OLED_FONT_TYPE_e
+	@note 1=default 2=thick 3=seven segment 4=wide 5=tiny 6=homespun 7=bignums 8=mednums
+*/
 void ERMCH1115_graphics::setFontNum(OLEDFontType_e  FontNumber) 
 {
 		_FontNumber = FontNumber;
@@ -615,13 +770,15 @@ void ERMCH1115_graphics::setFontNum(OLEDFontType_e  FontNumber)
 	
 }
 
-// Desc: writes a char (c) on the OLED
-// Param 1 , 2 : coordinates (x, y).
-// Param 3: The ASCII character
-// Param 4: foreground color
-// Param 5: background color
-// Notes for font 7-8 bignums + mednums only
-
+/*!
+	@brief writes a char (c) on the OLED
+	@param x X coordinate
+	@param y Y coordinate
+	@param c The ASCII character
+	@param color 
+	@param bg background color
+	@note for font 7,8 only
+*/
 void ERMCH1115_graphics::drawCharNum(uint8_t x, uint8_t y, uint8_t c, uint8_t color , uint8_t bg) 
 {
 		if (_FontNumber < OLEDFontType_Bignum  ){return;}
@@ -638,6 +795,10 @@ void ERMCH1115_graphics::drawCharNum(uint8_t x, uint8_t y, uint8_t c, uint8_t co
 				#ifdef CH1115_Font_Eight
 					ctemp = pgm_read_byte(&pFontMedNumptr[c - _CurrentFontoffset][i]);
 				#endif
+			}else 
+			{
+				c+=1; // get rid of unused variable compiler warning, in event the font undefined
+				return;
 			}
 				for (j = 0; j < 8; j++) {
 						if (ctemp & 0x80) {
@@ -656,13 +817,15 @@ void ERMCH1115_graphics::drawCharNum(uint8_t x, uint8_t y, uint8_t c, uint8_t co
 		}
 }
 
-// Desc: Writes text string (*ptext) on the OLED
-// Param 1 , 2 : coordinates (x, y).
-// Param 3: pointer to string 
-// Param 4: color 
-// Param 5: background color
-// Notes for font 7-8 only "bignums"  + "medNums"
-
+/*!
+	@brief Writes text string (*ptext) on the OLED
+	@param x X coordinate
+	@param y Y coordinate
+	@param pText pointer to string of ASCII character's
+	@param color text color
+	@param bg background color
+	@note for font 7,8 only
+*/
 void ERMCH1115_graphics::drawTextNum(uint8_t x, uint8_t y, char *pText, uint8_t color, uint8_t bg) 
 {
 		if (_FontNumber < OLEDFontType_Bignum){return;}
@@ -680,12 +843,16 @@ void ERMCH1115_graphics::drawTextNum(uint8_t x, uint8_t y, char *pText, uint8_t 
 		}
 }
 
-// Desc: Writes text string (*ptext) on the OLED
-// Param 1 , 2 : coordinates (x, y).
-// Param 3: pointer to string 
-// Param 4: color 
-// Param 5: background color
-// Notes for font 1- 6 only
+/*!
+	@brief Writes text string on the OLED
+	@param x X coordinate
+	@param y Y coordinate
+	@param pText pointer to string/array
+	@param color text color
+	@param bg background color
+	@param size 1-x
+	@note for font #1-6 only
+*/
 void ERMCH1115_graphics::drawText(uint8_t x, uint8_t y, char *pText, uint8_t color, uint8_t bg, uint8_t size) {
      if (_FontNumber >= OLEDFontType_Bignum){return;}
     uint8_t cursor_x, cursor_y;

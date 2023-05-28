@@ -1,68 +1,62 @@
+/*!
+	@file: ER_OLEDM1_CH1115_BITMAP.ino
+	@brief Example file for ER_OLEDM1_CH1115 library, showing how to display bitmaps.
+	
+		| test no | Desc | bitmap in PROGMEM | data addressing | note  | 
+		| ---- |  ---- |  ---- | ----  | ---- |
+		|1| OledBitmap() |Yes| Vertical | buffer not used, writes directly to screen. |
+		|2| OLEDBuffer() |No|  Vertical | used internally mostly. |
+		|3|  Screen init test |No| Vertical | Can be used when initialising screen at start up |
+		|4A|  drawBitmap() |Yes| Vertical | setDrawBitmapAddr(true) |
+		|4B|  drawBitmap() |Yes| Horizontal  | setDrawBitmapAddr(false) |
+		* 
+	@note 
+		-# GPIO is for arduino UNO for other tested MCU see extras folder at URL
+		-# See option section to select which test to run 
+		-# This is for hardware SPI for software SPI see ER_OLEDM1_CH1115_SWSPI.ino example.
+	@test
+		-# Test 1 OLEDBitmap method
+		-# Test 2 OLEDBuffer Method
+		-# Test 3 Bitmap splashscreen technique
+		-# Test 4a drawBitmap() method, Vertical addressing
+		-# Test 4b drawBitmap() method, Horizontal  addressing
 
-// Example file name : ER_OLEDM1_CH1115_BITMAP.ino
-// Description:
-// Test file for ER_OLEDM1_CH1115 library, showing how to display bitmaps.
-// URL: https://github.com/gavinlyonsrepo/ER_OLEDM1_CH1115
-// *****************************
-// NOTES :
-// (1) GPIO is for arduino UNO for other tested MCU see extras folde at URL
-
-// (2) In the <ER_OLEDM1_CH1115.h> USER BUFFER OPTION SECTION, setting will change depending on which test you use,
-// test 2 3 4 5 6 are commented out currently.
-// -> test (1) OLEDBitmap method test : ANY one of 3 buffer settings on , bitmap must be in PROGMEM &  Vertical addressed,
-//  buffer not used, writes directly to screen.
-//
-// -> test (2) OLEDBuffer method test : MULTI_BUFFER or SINGLE_BUFFER setting on , bitmap must NOT be in PROGMEM & Vertical addressed
-//   used internally mostly.
-//
-// -> test (3) multibuffer init  test : MULTI_BUFFER setting on, buffer must NOT be in PROGMEM & Vertical addressed,
-//    can be used when initialising multibuffer
-//
-// -> test (4) singlebuffer init test : SINGLE_BUFFER  setting on, buffer must NOT be in PROGMEM & Vertical addressed,
-//   can be used when initialising buffer
-//
-// -> test (5) drawBitmap method test 1/2 : MULTI_BUFFER or SINGLE_BUFFER setting on,
-//    buffer must BE NOT in PROGMEM , bitmap must be in PROGMEM
-//    Bitmap Data Vertical addressed, call setDrawBitmapAddr(true) to set this mode. Default.
-//
-// -> test (6) drawBitmap method test 2/2 : MULTI_BUFFER or SINGLE_BUFFER setting on,
-//    buffer must BE NOT in PROGMEM , bitmap must be in PROGMEM
-//    Bitmap Data Horziontal addressed call setDrawBitmapAddr(false) to set this mode
-//
-// (3) This is for hardware SPI for software SPI see ER_OLEDM1_CH1115_SWSPI.ino example.
-// ******************************
+*/
 
 #include "ER_OLEDM1_CH1115.hpp"
 
-#define OLEDcontrast 0x80 //Contrast 00 to FF , 0x80 is default. user adjust
+//Contrast 00 to FF , 0x80 is default. user adjust
+#define OLEDcontrast 0x80
+
+// GPIO 5-wire SPI interface
+#define RES 8  // GPIO pin number pick any you want
+#define DC 9   // GPIO pin number pick any you want
+#define CS 10  // GPIO pin number pick any you want
+// GPIO pin number SDA(UNO 11) , HW SPI , MOSI
+// GPIO pin number SCK(UNO 13) , HW SPI , SCK
+
+// Buffer setup
 #define MYOLEDHEIGHT 64
 #define MYOLEDWIDTH 128
 
+// instantiate an OLED object
+ERMCH1115 myOLED(DC, RES, CS);
+
 // **************** USER OPTION SELECTION ***************
-//pick a test to run ONE test and one TEST only
-#define test1
-//#define test2
-//#define test3
-//#define test4
-//#define test5
-//#define test6
+// Pick a test to run ONE test and one TEST only
+#define test1  // OLEDBitmap
+//#define test2  // OLEDBuffer
+//#define test3  //  Init Buffer with Data
+//#define test4  //  DrawBitmap
+
 //*******************************************************
 
-// GPIO 5-wire SPI interface
-#define RES 8 // GPIO pin number pick any you want
-#define DC 9 // GPIO pin number pick any you want 
-#define CS 10  // GPIO pin number pick any you want
-// GPIO pin number SCK(UNO 13) , HW SPI , SCK
-// GPIO pin number SDA(UNO 11) , HW SPI , MOSI
-
-ERMCH1115  myOLED(DC, RES, CS); //  object , DC, RES, CS
-
-// 'fullScreenBuffer', 128x64px "g lyons" + shapes , SW used to make https://javl.github.io/image2cpp/ vertical addressing
-#if defined(test2) || defined(test3) || defined(test4) || defined(test5) || defined(test6)
-uint8_t fullScreenBuffer[MYOLEDWIDTH * (MYOLEDHEIGHT / 8)] = {
-#endif
+// '128x64px "g lyons" + shapes , SW used to make https://javl.github.io/image2cpp/ vertical addressing
 #ifdef test1
-  const PROGMEM  uint8_t fullscreenBitmap[MYOLEDWIDTH * (MYOLEDHEIGHT / 8)] = {
+  const PROGMEM uint8_t fullscreenBitmap[MYOLEDWIDTH * (MYOLEDHEIGHT / 8)] = {
+#endif
+#if defined(test2) || defined(test3) || defined(test4)
+uint8_t fullScreenBuffer[MYOLEDWIDTH * (MYOLEDHEIGHT / 8)] = {
 #endif
     0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0xc0, 0xc0, 0xc0, 0xc0, 0xc0, 0xc0, 0xc0, 0xc0, 0xc0,
     0xc0, 0xc0, 0xc0, 0xc0, 0xc0, 0xc0, 0xc0, 0xc0, 0xc0, 0xc0, 0xc0, 0xc0, 0xc0, 0xc0, 0xc0, 0xc0,
@@ -127,168 +121,118 @@ uint8_t fullScreenBuffer[MYOLEDWIDTH * (MYOLEDHEIGHT / 8)] = {
     0x1f, 0x1f, 0x1f, 0x1f, 0x1f, 0x1f, 0x1f, 0x1f, 0x1f, 0x1f, 0x1f, 0x1f, 0x1f, 0x1f, 0x1f, 0x1f,
     0x1f, 0x1f, 0x1f, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x1f, 0x1f, 0x1c, 0x1c, 0x1c, 0x1c, 0x1c,
     0x1c, 0x1c, 0x1c, 0x1c, 0x1c, 0x1c, 0x1c, 0x1c, 0x1c, 0x1c, 0x1c, 0x1c, 0x1c, 0x1c, 0x1c, 0x1c,
-    0x1c, 0x1c, 0x1c, 0x1c, 0x1c, 0x1c, 0x1c, 0x1c, 0x1c, 0x1c, 0x1c, 0x1f, 0x1f, 0x1f, 0x1f, 0x00
-  };
+    0x1c, 0x1c, 0x1c, 0x1c, 0x1c, 0x1c, 0x1c, 0x1c, 0x1c, 0x1c, 0x1c, 0x1f, 0x1f, 0x1f, 0x1f, 0x00 };
 
 #ifdef test2
-  // 'small Bitmap', 20x20px bitmap bi-colour Vertical addressed ,not in progmem Test 2
-  const  uint8_t  smallBitmapNPM [60] = {
-    0xff, 0x3f, 0x0f, 0x07, 0x03, 0x13, 0x33, 0x39, 0x39, 0x79, 0xf9, 0xf9, 0xfb, 0xf3, 0xf7, 0xe3,
-    0x87, 0x0f, 0x1f, 0xff, 0xf9, 0xc0, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x03, 0x0f,
-    0x1d, 0x19, 0x10, 0x19, 0x0f, 0x00, 0xc0, 0xf0, 0x0f, 0x0f, 0x0f, 0x0e, 0x0c, 0x0c, 0x08, 0x08,
-    0x08, 0x00, 0x00, 0x08, 0x08, 0x08, 0x0c, 0x0c, 0x0e, 0x0f, 0x0f, 0x0f
-  };
+// 'small Bitmap', 20x20px bitmap bi-colour Vertical addressed ,not in progmem Test 2
+const uint8_t smallBitmapNPM[60] = {
+  0xff, 0x3f, 0x0f, 0x07, 0x03, 0x13, 0x33, 0x39, 0x39, 0x79, 0xf9, 0xf9, 0xfb, 0xf3, 0xf7, 0xe3,
+  0x87, 0x0f, 0x1f, 0xff, 0xf9, 0xc0, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x03, 0x0f,
+  0x1d, 0x19, 0x10, 0x19, 0x0f, 0x00, 0xc0, 0xf0, 0x0f, 0x0f, 0x0f, 0x0e, 0x0c, 0x0c, 0x08, 0x08,
+  0x08, 0x00, 0x00, 0x08, 0x08, 0x08, 0x0c, 0x0c, 0x0e, 0x0f, 0x0f, 0x0f
+};
 #endif
 
-#ifdef test5
-  // 'small Bitmap', 20x20px bitmap bi-colour Vertical addressed Test 5
-  const PROGMEM uint8_t  smallBitmap [60] = {
-    0xff, 0x3f, 0x0f, 0x07, 0x03, 0x13, 0x33, 0x39, 0x39, 0x79, 0xf9, 0xf9, 0xfb, 0xf3, 0xf7, 0xe3,
-    0x87, 0x0f, 0x1f, 0xff, 0xf9, 0xc0, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x03, 0x0f,
-    0x1d, 0x19, 0x10, 0x19, 0x0f, 0x00, 0xc0, 0xf0, 0x0f, 0x0f, 0x0f, 0x0e, 0x0c, 0x0c, 0x08, 0x08,
-    0x08, 0x00, 0x00, 0x08, 0x08, 0x08, 0x0c, 0x0c, 0x0e, 0x0f, 0x0f, 0x0f
-  };
+#ifdef test4
+// 'small Bitmap', 20x20px bitmap bi-colour Vertical addressed Test 4A
+const PROGMEM uint8_t smallBitmap[60] = {
+  0xff, 0x3f, 0x0f, 0x07, 0x03, 0x13, 0x33, 0x39, 0x39, 0x79, 0xf9, 0xf9, 0xfb, 0xf3, 0xf7, 0xe3,
+  0x87, 0x0f, 0x1f, 0xff, 0xf9, 0xc0, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x03, 0x0f,
+  0x1d, 0x19, 0x10, 0x19, 0x0f, 0x00, 0xc0, 0xf0, 0x0f, 0x0f, 0x0f, 0x0e, 0x0c, 0x0c, 0x08, 0x08,
+  0x08, 0x00, 0x00, 0x08, 0x08, 0x08, 0x0c, 0x0c, 0x0e, 0x0f, 0x0f, 0x0f
+};
+// 'small Bitmap', 20x20px bitmap bi-colour horizontal addressed Test 4B
+const PROGMEM uint8_t smallBitmapHa[60] = {
+  0xff, 0xff, 0xf0, 0xfe, 0x0f, 0xf0, 0xf0, 0x02, 0xf0, 0xe1, 0xf8, 0x70,
+  0xc7, 0xfe, 0x30, 0xc3, 0xff, 0x10, 0x80, 0x7f, 0x10, 0x80, 0x3f, 0x90,
+  0x80, 0x3d, 0x80, 0x00, 0x30, 0x80, 0x00, 0x18, 0x80, 0x80, 0x1d, 0x80,
+  0x80, 0x0f, 0x10, 0x80, 0x00, 0x10, 0xc0, 0x00, 0x30, 0xc0, 0x00, 0x30,
+  0xe0, 0x00, 0x70, 0xf0, 0x00, 0xf0, 0xfc, 0x03, 0xf0, 0xff, 0x9f, 0xf0
+};
 #endif
 
-#ifdef test6
-  // 'small Bitmap', 20x20px bitmap bi-colour horizontal addressed Test 6
-  const PROGMEM uint8_t smallBitmapHa[60] = {
-    0xff, 0xff, 0xf0, 0xfe, 0x0f, 0xf0, 0xf0, 0x02, 0xf0, 0xe1, 0xf8, 0x70,
-    0xc7, 0xfe, 0x30, 0xc3, 0xff, 0x10, 0x80, 0x7f, 0x10, 0x80, 0x3f, 0x90,
-    0x80, 0x3d, 0x80, 0x00, 0x30, 0x80, 0x00, 0x18, 0x80, 0x80, 0x1d, 0x80,
-    0x80, 0x0f, 0x10, 0x80, 0x00, 0x10, 0xc0, 0x00, 0x30, 0xc0, 0x00, 0x30,
-    0xe0, 0x00, 0x70, 0xf0, 0x00, 0xf0, 0xfc, 0x03, 0xf0, 0xff, 0x9f, 0xf0
-  };
+void setup() {
+  myOLED.OLEDbegin(OLEDcontrast);  // initialize the OLED
+  myOLED.OLEDFillScreen(0x00, 0);  // Clears screen
+  delay(500);
+}
+
+void loop() {
+  while (1) {
+#ifdef test1
+    Test1();
+#endif
+#ifdef test2
+    Test2();
+#endif
+#ifdef test3
+    Test3();
+#endif
+#ifdef test4
+    Test4();
+#endif
+  }
+}
+
+#ifdef test1
+void Test1(void) {
+  myOLED.OLEDBitmap(0, 0, MYOLEDWIDTH, MYOLEDHEIGHT, fullscreenBitmap);
+  while (1) { delay(5000); };
+}
 #endif
 
-
-  void setup()
-  {
-    myOLED.OLEDbegin(OLEDcontrast); // initialize the OLED
-    myOLED.OLEDFillScreen(0x00, 0); // Clears screen
+#ifdef test2
+void Test2(void) {
+  const uint8_t bitmapNum = 10;
+  const uint8_t bitmapSize = 20;
+  //  x ,y,w,h, bitmap
+  myOLED.OLEDBuffer(30, 10, 20, 20, (uint8_t*)smallBitmapNPM);
+  myOLED.OLEDBuffer(70, 10, 20, 20, (uint8_t*)smallBitmapNPM);
+  for (uint8_t i = 0; i < bitmapNum; i++) {
+    myOLED.OLEDBuffer(random(128 - bitmapSize), random(64 - bitmapSize), bitmapSize, bitmapSize, (uint8_t*)smallBitmapNPM);
     delay(500);
   }
+  while (1) { delay(5000); };
+}
 
-  void loop()
-  {
-    while (1)
-    {
-#ifdef test1
-      Test1();
 #endif
-#ifdef test2
-      Test2();
-#endif
+
+// Test 3
 #ifdef test3
-      Test3();
+void Test3(void) {
+
+  // instantiate an Shared buffer object , only one in this case to cover whole screen
+  ERMCH1115_SharedBuffer fullScreen(fullScreenBuffer, MYOLEDWIDTH, MYOLEDHEIGHT, 0, 0);
+  myOLED.ActiveBufferPtr = &fullScreen;  // Point the shared screen to the active buffer
+  myOLED.OLEDupdate();                   // update the screen
+  while (1) { delay(5000); };
+}
 #endif
+
+// test (4)
 #ifdef test4
-      Test4();
-#endif
-#ifdef test5
-      Test5();
-#endif
-#ifdef test6
-      Test6();
-#endif
-    }
-  }
+void Test4(void) {
+  // instantiate an Shared buffer object , only one in this case to cover whole screen
+  ERMCH1115_SharedBuffer fullScreen(fullScreenBuffer, MYOLEDWIDTH, MYOLEDHEIGHT, 0, 0);
+  myOLED.ActiveBufferPtr = &fullScreen;
+  myOLED.OLEDclearBuffer();  // Clear active buffer
 
-#ifdef test1
-  void Test1(void)
-  {
-    myOLED.OLEDBitmap(0, 0 , MYOLEDWIDTH, MYOLEDHEIGHT, fullscreenBitmap);
-    while (1) {
-      delay(5000);
-    };
-  }
-#endif
-
-#ifdef test2
-  void Test2(void)
-  {
-    const uint8_t bitmapNum = 10;
-    const uint8_t bitmapSize = 20;
-    //  x ,y,w,h, bitmap
-    myOLED.OLEDBuffer(30, 10, 20, 20, (uint8_t*)smallBitmapNPM);
-    myOLED.OLEDBuffer(70, 10, 20, 20, (uint8_t*)smallBitmapNPM);
-    for (uint8_t i = 0; i < bitmapNum; i++)
-    {
-      myOLED.OLEDBuffer(random(128 - bitmapSize), random(64 - bitmapSize), bitmapSize, bitmapSize, (uint8_t*)smallBitmapNPM);
-      delay(500);
-    }
-    while (1) {
-      delay(5000);
-    };
-
-  }
-
-#endif
-
-#ifdef test3
-  void Test3(void)
-  {
-
-    MultiBuffer Whole_screen;   // Declare a struct to point to  a buffer
-    // Intialise that struct with buffer details (&struct,  buffer, w, h, x-offset,y-offset)
-    myOLED.OLEDinitBufferStruct(&Whole_screen, fullScreenBuffer, MYOLEDWIDTH, MYOLEDHEIGHT, 0, 0);
-    myOLED.ActiveBuffer = &Whole_screen;
-    myOLED.OLEDupdate();
-    while (1) {
-      delay(5000);
-    };
-
-  }
-#endif
-
-#ifdef test4
-  void Test4(void)
-  {
-    myOLED.buffer = (uint8_t*) &fullScreenBuffer;
-    myOLED.OLEDupdate();
-    while (1) {
-      delay(5000);
-    };
-  }
-
-#endif
-
-  // test (5)
-#ifdef test5
-  void Test5(void)
-  {
-  MultiBuffer MyStruct;
-  myOLED.OLEDinitBufferStruct(&MyStruct, fullScreenBuffer, 128, 64, 0, 0);  // Intialise that struct (&struct,buffer,w,h,x,y)
-  myOLED.ActiveBuffer = &MyStruct;
-  myOLED.OLEDclearBuffer();   // Clear active buffer
-
-  myOLED.setDrawBitmapAddr(true); // for Bitmap Data Vertical  addressed
-  myOLED.drawBitmap(0, 0, smallBitmap, 20, 20, FOREGROUND, BACKGROUND);
-  myOLED.drawBitmap(30, 20, smallBitmap, 20, 20, BACKGROUND, FOREGROUND);
-
+  // Test 4A 
+  myOLED.setDrawBitmapAddr(true);  // for Bitmap Data Vertical  addressed , default
+  myOLED.drawBitmap(0, 0, smallBitmap, 20, 20, OLED_WHITE, OLED_BLACK);
+  myOLED.drawBitmap(30, 20, smallBitmap, 20, 20, OLED_BLACK, OLED_WHITE);
   myOLED.OLEDupdate();
-  while (1) {
-    delay(5000);
-  };
-  }
-#endif
+  delay(5000);
 
-  //   test  (6)
-#ifdef test6
-  void Test6(void)
-  {
-  MultiBuffer MyStruct;
-  myOLED.OLEDinitBufferStruct(&MyStruct, fullScreenBuffer, 128, 64, 0, 0);  // Intialise that struct (&struct,buffer,w,h,x,y)
-  myOLED.ActiveBuffer = &MyStruct;
-  myOLED.OLEDclearBuffer();   // Clear active buffer
-
-  myOLED.setDrawBitmapAddr(false); // for Bitmap Data Horziontal addressed
-  myOLED.drawBitmap(0, 0, smallBitmapHa, 20, 20, FOREGROUND, BACKGROUND);
-  myOLED.drawBitmap(100, 20, smallBitmapHa, 20, 20, BACKGROUND, FOREGROUND);
-
+  myOLED.OLEDclearBuffer();  // Clear active buffer
+  // Test 4B
+  myOLED.setDrawBitmapAddr(false);  // for Bitmap Data Horziontal addressed
+  myOLED.drawBitmap(50, 10, smallBitmapHa, 20, 20, OLED_WHITE, OLED_BLACK);
+  myOLED.drawBitmap(100, 20, smallBitmapHa, 20, 20, OLED_BLACK, OLED_WHITE);
   myOLED.OLEDupdate();
-  while (1) {
-    delay(5000);
-  };
-  }
+  delay(5000);
+
+  while (1) { delay(5000); };
+}
+
 #endif
