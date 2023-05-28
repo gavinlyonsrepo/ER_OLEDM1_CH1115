@@ -35,8 +35,8 @@ Output
 Output Screenshots, From left to right, top to bottom.
 
 1. Full screen bitmap displayed 
-2. Shared Screen mode screen divided into two horizontal Screens with one buffer
-3. Shared Screen mode screen divided into vertical Screens with one buffer, clock demo.
+2. Shared Screen mode, screen divided into two Screens with one buffer, Frame rate per second demo.
+3. Shared Screen mode, screen divided into two Screens with one buffer, clock demo.
 4. Different size and type of fonts 
 5. Available ASCII font printed out 0-127
 6. Extended ASCII font printed out 128-255  
@@ -96,11 +96,10 @@ Hardware and software SPI. Two different class constructors. User can pick the r
 
 The library features a multi-screen shared buffer mode, In order to save data memory.
 
-For example if user defines a buffer to cover the whole screen it takes 1024 bytes of data memory. Instead a user can create a buffer that covers half the screen 512 bytes then define two screens each pointing to the same buffer.
+For example if user defines a buffer to cover the whole screen it takes 1024 bytes of data memory. Instead a user can create a buffer that covers half the screen for just 512 bytes then define two screens each pointing to the same buffer.
 The user uses the ERMCH1115_SharedBuffer Class objects to define each screen
-and the ActiveBufferPtr to switch between each screen. Multiple screens of same size can be created 
-so OLED screen can be divided into thirds or quarters saving even more memory.
-The disadvantage of this is the code is slightly more complicated and user can only write to one Screen at a time. If user does not want to use multi screen mode they can just define a screen to cover entire OLED screen. See example files for more detail.
+and the ActiveBufferPtr pointer to switch between each screen. Multiple screens of same size can be created so OLED screen can be divided into thirds or quarters saving even more memory.
+The disadvantage of this is the code is slightly more complicated and user can only write to one screen at a time. If user does not want to use multi screen mode they can simply just define ONE screen to cover entire OLED screen. See example files for more detail.
 
 **fonts**
 
@@ -199,7 +198,7 @@ Tested_MCU
 Tested on following MCUs. for the pin connections used 
 during testing see extras folder, GPIO_MCU_used.txt file.
 
-1. Arduino  UNO & NANO  v3  [Example](https://github.com/gavinlyonsrepo/RF_DATA_LINK)
+1. Arduino  UNO & NANO  v3  
 2. ESP8266 
 3. ESP32 
 4. STM32 "blue pill"
