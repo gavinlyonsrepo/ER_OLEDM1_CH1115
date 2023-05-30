@@ -150,11 +150,11 @@ There is a few different ways of displaying bitmaps,
 | ------ | ------ | ------- |  ------ |  
 | 1 | OLEDBitmap() | Vertical |  Writes directly to screen , no buffer used. | 
 | 2 | OLEDBuffer()  |   Vertical  |  Mostly for internal use ... mostly | 
-| 3 | Multi buffer init  | Vertical  |  Can be used when initialising a MB | 
+| 3 | buffer init technique  | Vertical  |  Can be used when initialising a buffer, splash screen | 
 | 4 | drawBitmap() |   Vertical | default,  setDrawBitmapAddr(true) | 
 | 5 | drawBitmap() |  Horizontal | setDrawBitmapAddr(false) |
 
-See the bitmap example file for more details on each method. Bitmaps can be turned to data [here at link]( https://javl.github.io/image2cpp/) , Bitmaps  should be defined in the program memory and buffers in the data memory, for methods 3 & 4 buffers can be initialised with bitmap data.
+See the bitmap example file for more details on each method. Bitmaps can be turned to data [here at link]( https://javl.github.io/image2cpp/) , Bitmaps  should be defined in the program memory and buffers in the data memory.
 
 ### User adjustments
 
