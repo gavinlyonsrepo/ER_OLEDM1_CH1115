@@ -5,15 +5,16 @@
 	@author Gavin Lyons
 	@note
 		-# (1) GPIO is for arduino UNO for other tested MCU see readme.
-		-# (2) This is for software  SPI for hardware SPI see all other examples.
+		-# (2) This is for software SPI for hardware SPI see all other examples.
 	
 	@test
-		-# Software SPI
+		-# 601 Software SPI
 */
 #include "ER_OLEDM1_CH1115.hpp"
 
 //Contrast 00 to FF , 0x80 is default. user adjust
 #define OLEDcontrast 0x80 
+#define SWSPIGPIODelay 0 // uS Software SPi GPIO delay, zero by default
 
 // GPIO 5-wire SW SPI interface
 #define CS 10  // GPIO pin number pick any you want
@@ -22,15 +23,15 @@
 #define SCL 12 // "
 #define SDA  11 // "
 
-// instantiate an OLED object
-ERMCH1115  myOLED(DC, RES, CS, SCL, SDA); 
-
 // Buffer setup
 #define MYOLEDHEIGHT 64
 #define MYOLEDWIDTH 128
+#define FULLSCREEN (MYOLEDWIDTH  * (MYOLEDHEIGHT / 8))
 // Define a Buffer
-uint8_t  screenBuffer[MYOLEDWIDTH  * (MYOLEDHEIGHT / 8)]; 
+uint8_t screenBuffer[FULLSCREEN]; 
 
+// instantiate an OLED object
+ERMCH1115  myOLED(MYOLEDWIDTH, MYOLEDHEIGHT, DC, RES, CS, SCL, SDA); 
 // instantiate an Shared buffer object , only one in this case to cover whole screen
 ERMCH1115_SharedBuffer fullScreen(screenBuffer, MYOLEDWIDTH, MYOLEDHEIGHT, 0, 0);
 
@@ -41,6 +42,7 @@ long elapsedTime ;                  // elapsed time for stop watch
 // ************* SETUP ***************
 void setup() {
   delay(50);
+  myOLED.OLEDHighFreqDelaySet(SWSPIGPIODelay);
   myOLED.OLEDbegin(OLEDcontrast); // initialize the OLED
   myOLED.OLEDFillScreen(0x00, 0); // Fill the screen with zeros
   myOLED.setTextColor(OLED_WHITE);
@@ -63,17 +65,20 @@ void DisplayText()
   while (1)
   {
     myOLED.OLEDclearBuffer();
-    myOLED.setCursor(20, 20);
+    myOLED.setCursor(20, 0);
     myOLED.print(F("Software SPI"));
+    myOLED.setCursor(20, 10);
+    myOLED.print(F("Speed test"));
+    myOLED.setCursor(20, 20);
+    myOLED.print(myOLED.OLEDHighFreqDelayGet());
     myOLED.setCursor(20, 30);
-    myOLED.print(F("speed test:"));
-    myOLED.setCursor(20, 50);
     if (count < 1000)
     {
       myOLED.print(count);
     } else
     {
       elapsedTime =   millis() - startTime;
+      myOLED.setCursor(20, 40);
       myOLED.print("Time Taken:");
       myOLED.print(elapsedTime / 1000L);
     }
@@ -81,9 +86,7 @@ void DisplayText()
     myOLED.OLEDupdate();  // Write to the buffer
     if (count == 1000)
     {
-      while (1) {
-        delay(1000);
-      }; //test finished
+      while(1){delay(100);}; //test finished
     }
     count ++;
   }

@@ -28,3 +28,9 @@
 	* Replaced multi-screen struct with a class 
 	* Added Enum font inside class name space
 	* Removed no buffer mode.  
+* Version 1.4.0 Jan 2024
+	* OLED width & height no longer constant, and must now be supplied in constructor.
+	* SW SPI GPIO delay can now be modified by a setter function
+	* Enhanced Error handling for fonts and bitmaps, enum  *CH1115_Return_codes* added.
+	* Fonts 9-12 added
+	* Fonts 7-8 characters increased from 11 to 14.

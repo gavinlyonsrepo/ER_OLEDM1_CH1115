@@ -95,7 +95,7 @@
 
 // Delays
 #define ERMCH1115_INITDELAY 100 /**< mS delay set after init and before operations */
-#define ERMCH1115_HIGHFREQ_DELAY 0 /**< uS  delay, Can be used in software SPI for high freq MCU*/
+#define ERMCH1115_HIGHFREQ_DELAY 0 /**< uS  delay default value, Can be used in software SPI for high freq MCU*/
 #define ERMCH1115_RST_DELAY1 10 /**< mS delay , used in reset routine  */
 #define ERMCH1115_RST_DELAY2 100 /**< mS delay , used in reset routine */
 
@@ -115,13 +115,11 @@
 	#define SPI_TRANSACTION_END  // Blank
 #endif
 
-const uint8_t ERMCH1115_SCREEN_WIDTH = 128; /**< Width of screen in pixels */
-const uint8_t ERMCH1115_SCREEN_HEIGHT = 64; /**< Height of screen in pixels */
 
 // ** CLASS SECTION **
 
 /*! @brief class to hold screen data to define buffer , multiple screens can be made for the shared buffer
-    Buffer must be same size and offsets to if saving Data memory is goal */
+	Buffer must be same size and offsets to if saving Data memory is goal */
 class  ERMCH1115_SharedBuffer
 {
 	public :
@@ -139,8 +137,8 @@ class  ERMCH1115_SharedBuffer
 /*! @brief class to drive the ERMCh1115 OLED */
 class ERMCH1115 : public ERMCH1115_graphics  {
   public:
-	ERMCH1115(int8_t cd, int8_t rst, int8_t cs, int8_t sclk, int8_t din);
-	ERMCH1115(int8_t cd, int8_t rst, int8_t cs);
+	ERMCH1115(int16_t oledwidth , int16_t oledheight, int8_t cd, int8_t rst, int8_t cs, int8_t sclk, int8_t din);
+	ERMCH1115(int16_t oledwidth , int16_t oledheight, int8_t cd, int8_t rst, int8_t cs);
 
 	~ERMCH1115(){};
 	
@@ -155,7 +153,7 @@ class ERMCH1115 : public ERMCH1115_graphics  {
 	
 	void OLEDFillScreen(uint8_t pixel, uint8_t mircodelay);
 	void OLEDFillPage(uint8_t page_num, uint8_t pixels,uint8_t delay);
-	void OLEDBitmap(int16_t x, int16_t y, uint8_t w, uint8_t h, const uint8_t* data);
+	CH1115_Return_Codes_e OLEDBitmap(int16_t x, int16_t y, uint8_t w, uint8_t h, const uint8_t* data);
 	
 	void OLEDEnable(uint8_t on);
 	void OLEDInvert(uint8_t on);
@@ -167,13 +165,16 @@ class ERMCH1115 : public ERMCH1115_graphics  {
 	bool OLEDIssleeping(void);
 	void OLEDPowerDown(void);
 	
+	uint16_t OLEDLibVerNumGet(void);
+	uint16_t OLEDHighFreqDelayGet(void);
+	void OLEDHighFreqDelaySet(uint16_t);
+	
 	ERMCH1115_SharedBuffer* ActiveBufferPtr=nullptr; /**< Active buffer pointer , a pointer to which shared buffer object */
 
   private:
 
 	void send_data(uint8_t data);
 	void send_command(uint8_t command, uint8_t value);
-	bool isHardwareSPI(void);
 	void CustomshiftOut(uint8_t bitOrder, uint8_t val);
 
 	int8_t _OLED_CS;   /**< GPIOChip select  line */
@@ -181,9 +182,14 @@ class ERMCH1115 : public ERMCH1115_graphics  {
 	int8_t _OLED_RST;  /**< GPIO Reset line */
 	int8_t _OLED_SCLK; /**< GPIO Clock Line Software SPI only*/
 	int8_t _OLED_DIN;   /**< GPIO MOSI Line Software SPI only*/
-
+	
+	uint8_t _isHardwareSPI = 2; /**< Hardware SPI = 2 , SoftwareSPI = 3 */
 	bool _sleep = true; /**< False awake/ON , true sleep/OFF */
-	uint8_t _OLEDcontrast; /**< Contrast default 0x80 datasheet 00-FF */
+	uint8_t _OLEDcontrast = 0x80; /**< Contrast default 0x80 datasheet 00-FF */
+	uint16_t _HighFreqDelay =  ERMCH1115_HIGHFREQ_DELAY; /**< uS GPIO Communications delay, SW SPI ONLY */
+	 const uint16_t _LibVersionNum = 140; /**< Library version number 180 = 1.8.0*/
+	 uint8_t _WidthScreen = 128; /**< Width of screen in pixels */
+	 uint8_t _HeightScreen = 64;  /**< Height of screen in pixels */
 
 }; 
 

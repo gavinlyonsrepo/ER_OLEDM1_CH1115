@@ -7,8 +7,8 @@
 		-# GPIO is for arduino UNO for other tested MCU see readme.
 		-# This is for hardware SPI for software SPI see ER_OLEDM1_CH1115_SWSPI.ino example.
 	@test
-		-# Shared buffer, Multiple screens (2 off) spilt into left and right
-		-# FPS test frame per second 
+		-# 501 Shared buffer, Multiple screens (2 off) spilt into left and right
+		-# 502 FPS test frame per second 
 */
 
 // two shared screens sharing one buffer
@@ -33,10 +33,11 @@
 // Buffer setup
 #define MYOLEDHEIGHT 64
 #define MYOLEDWIDTH 128
+#define HALFSCREEN ((MYOLEDWIDTH * (MYOLEDHEIGHT / 8)) / 2) //(128 * 8)/2 = 512 bytes half screen 
 // Define a Buffer
-uint8_t  halfScreenBuffer[(MYOLEDWIDTH * (MYOLEDHEIGHT / 8)) / 2]; //(128 * 8)/2 = 512 bytes half screen 
+uint8_t  halfScreenBuffer[HALFSCREEN]; 
 // instantiate an OLED object
-ERMCH1115  myOLED(DC, RES, CS); 
+ERMCH1115  myOLED(MYOLEDWIDTH, MYOLEDHEIGHT,DC, RES, CS); 
 // instantiate two Shared buffer objects , one for each half of screen
 ERMCH1115_SharedBuffer  leftSide(halfScreenBuffer, MYOLEDWIDTH/2, MYOLEDHEIGHT, 0, 0);
 ERMCH1115_SharedBuffer rightSide(halfScreenBuffer, MYOLEDWIDTH/2, MYOLEDHEIGHT, MYOLEDWIDTH/2, 0);
@@ -49,9 +50,9 @@ bool colour = 1;
 void setup() {
   myOLED.OLEDbegin(OLEDcontrast); // initialize the OLED
   myOLED.OLEDFillScreen(0x00, 0);
-  myOLED.setTextColor(OLED_WHITE);
+  myOLED.setTextColor(OLED_WHITE,OLED_BLACK);
   myOLED.setTextSize(1);
-  myOLED.setFontNum(myOLED.OLEDFontType_Default);
+  myOLED.setFontNum(CH1115Font_Default);
 }
 
 // *********** MAIN LOOP ******************
@@ -79,7 +80,7 @@ void display_Left(long currentFramerate, int count)
   myOLED.ActiveBufferPtr = &leftSide; // set Active buffer to left side screen address
   myOLED.OLEDclearBuffer();
   myOLED.setCursor(0, 0);
-  myOLED.print(F("LHS Buffer"));
+  myOLED.print(F("LHS Screen"));
 
   myOLED.setCursor(0, 10);
   myOLED.print(F("512 bytes"));
@@ -105,7 +106,7 @@ void display_Left(long currentFramerate, int count)
   myOLED.print(fps);
   myOLED.print(" fps");
   myOLED.setCursor(0, 50);
-  myOLED.print("Ver 1.3.3");
+  myOLED.print(myOLED.OLEDLibVerNumGet());
   myOLED.drawFastVLine(92, 0, 63, OLED_WHITE);
   myOLED.OLEDupdate();
 }
@@ -116,7 +117,7 @@ void display_Right()
   myOLED.ActiveBufferPtr = &rightSide; // set Active buffer to right side screen address
   myOLED.OLEDclearBuffer();
   myOLED.setCursor(0, 0);
-  myOLED.print(F("RHS buffer"));
+  myOLED.print(F("RHS Screen"));
 
   myOLED.fillRect(0, 10, 20, 20-(count/200), colour);
   myOLED.fillCircle(40, 20, count/200, !colour);

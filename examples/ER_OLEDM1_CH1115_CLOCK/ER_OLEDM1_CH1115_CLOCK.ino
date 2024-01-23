@@ -7,8 +7,8 @@
 		-# GPIO is for arduino UNO for other tested MCU see readme.
 		-# This is for hardware SPI for software SPI see ER_OLEDM1_CH1115_SWSPI.ino example.
 	@test
-		-# Clock Demo
-		-# Shared buffer, Multiple screens (2 off) spilt into top and bottom
+		-# 901 Clock Demo
+		-# 902 Shared buffer, Multiple screens (2 off) spilt into top and bottom
 */
 
 // two shared screens sharing one buffer
@@ -34,10 +34,11 @@
 // Buffer setup
 #define MYOLEDHEIGHT 64
 #define MYOLEDWIDTH 128
+#define HALFSCREEN ((MYOLEDWIDTH * (MYOLEDHEIGHT / 8)) / 2) //(128 * 8)/2 = 512 bytes half screen 
 // Define a Buffer
-uint8_t  halfScreenBuffer[(MYOLEDWIDTH * (MYOLEDHEIGHT / 8)) / 2]; //(128 * 8)/2 = 512 bytes half screen 
+uint8_t  halfScreenBuffer[HALFSCREEN]; 
 // instantiate an OLED object
-ERMCH1115  myOLED(DC, RES, CS); 
+ERMCH1115  myOLED(MYOLEDWIDTH, MYOLEDHEIGHT,DC, RES, CS); 
 // instantiate two Shared buffer objects , one for each half of screen
 ERMCH1115_SharedBuffer  topHalf(halfScreenBuffer, MYOLEDWIDTH, MYOLEDHEIGHT/2, 0, 0);
 ERMCH1115_SharedBuffer bottomHalf(halfScreenBuffer, MYOLEDWIDTH, MYOLEDHEIGHT/2, 0, MYOLEDHEIGHT/2);
@@ -129,8 +130,8 @@ void DisplayText()
   myOLED.setTextSize(1);
 
   uint8_t sec = 55;
-  uint8_t Hour = 12;
-  uint8_t Min = 35;
+  uint8_t Hour = 10;
+  uint8_t Min = 58;
 
   while (1)
   {
@@ -151,8 +152,6 @@ void DisplayText()
           if (Hour == 24)
           {
             Hour = 0;
-            Min = 0;
-            sec = 0;
           }
         }
       }

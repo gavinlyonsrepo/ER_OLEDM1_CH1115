@@ -28,22 +28,27 @@ ERMCH1115_SharedBuffer::ERMCH1115_SharedBuffer(uint8_t* mybuffer, uint8_t w,  ui
 
 /*!
 	@brief init the OLED class object
+	@param oledwidth
+	@param oledheight
 	@param cd GPIO data or command
 	@param rst GPIO reset
 	@param cs GPIO Chip select
 	@note Hardware SPI version
  */
-ERMCH1115  :: ERMCH1115(int8_t cd, int8_t rst, int8_t cs) :ERMCH1115_graphics(ERMCH1115_SCREEN_WIDTH , ERMCH1115_SCREEN_HEIGHT)
+ERMCH1115  :: ERMCH1115(int16_t oledwidth , int16_t oledheight, int8_t cd, int8_t rst, int8_t cs) :ERMCH1115_graphics(oledwidth , oledheight)
 {
 	_OLED_CD = cd;
 	_OLED_RST= rst;
 	_OLED_CS = cs;
-	_OLED_DIN = -1;   // -1 for din and sclk specify using hardware SPI
-	_OLED_SCLK = -1;
+	_WidthScreen = oledwidth ; 
+	_HeightScreen = oledheight ;
+	_isHardwareSPI = 2; // HW SPI mode = 2
 }
 
 /*!
 	@brief init the OLED class object
+	@param oledwidth
+	@param oledheight
 	@param cd GPIO data or command
 	@param rst GPIO reset
 	@param cs GPIO Chip select
@@ -51,13 +56,16 @@ ERMCH1115  :: ERMCH1115(int8_t cd, int8_t rst, int8_t cs) :ERMCH1115_graphics(ER
 	@param din GPIO MOSI
 	@note software SPI version
  */
-ERMCH1115  :: ERMCH1115(int8_t cd, int8_t rst, int8_t cs, int8_t sclk, int8_t din) :  ERMCH1115_graphics(ERMCH1115_SCREEN_WIDTH , ERMCH1115_SCREEN_HEIGHT)
+ERMCH1115  :: ERMCH1115(int16_t oledwidth , int16_t oledheight, int8_t cd, int8_t rst, int8_t cs, int8_t sclk, int8_t din) :  ERMCH1115_graphics(oledwidth ,  oledheight)
 {
 	_OLED_CD = cd;
 	_OLED_RST= rst;
 	_OLED_CS = cs;
 	_OLED_DIN = din;
 	_OLED_SCLK = sclk;
+	_WidthScreen = oledwidth ; 
+	_HeightScreen = oledheight ;
+	_isHardwareSPI = 3; // SW SPI mode = 3
 }
 
 // == Methods ==
@@ -68,21 +76,23 @@ ERMCH1115  :: ERMCH1115(int8_t cd, int8_t rst, int8_t cs, int8_t sclk, int8_t di
  */
 void ERMCH1115::OLEDbegin (uint8_t OLEDcontrast)
 {
-	pinMode(_OLED_CD , OUTPUT);
-	pinMode(_OLED_RST, OUTPUT);
-	pinMode(_OLED_CS, OUTPUT);
-
 	_OLEDcontrast  = OLEDcontrast ;
-
-	if (isHardwareSPI())
+	switch (_isHardwareSPI)
 	{
-		SPI.begin();
-	}else
-	{
-		pinMode(_OLED_DIN, OUTPUT);
-		pinMode(_OLED_SCLK, OUTPUT);
+		case 2:
+			pinMode(_OLED_CD , OUTPUT);
+			pinMode(_OLED_RST, OUTPUT);
+			pinMode(_OLED_CS, OUTPUT);
+			SPI.begin();
+		break;
+		case 3:
+			pinMode(_OLED_CD , OUTPUT);
+			pinMode(_OLED_RST, OUTPUT);
+			pinMode(_OLED_CS, OUTPUT);
+			pinMode(_OLED_DIN, OUTPUT);
+			pinMode(_OLED_SCLK, OUTPUT);
+		break;
 	}
-
 	OLEDinit();
 }
 
@@ -92,8 +102,16 @@ void ERMCH1115::OLEDbegin (uint8_t OLEDcontrast)
 */
 void ERMCH1115::OLEDinit()
  {
-	if (isHardwareSPI()) {SPI_TRANSACTION_START}
-	ERMCH1115_CS_SetLow;
+	switch (_isHardwareSPI)
+	{
+		case 2: 
+			SPI_TRANSACTION_START;
+			ERMCH1115_CS_SetLow; 
+		break;
+		case 3: 
+			ERMCH1115_CS_SetLow; 
+		break;
+	}
 
 	OLEDReset();
 
@@ -139,8 +157,14 @@ void ERMCH1115::OLEDinit()
 
 	send_command(ERMCH1115_DISPLAY_ON, 0);
 	_sleep= false;
-	ERMCH1115_CS_SetHigh;
-	if (isHardwareSPI()) {SPI_TRANSACTION_END}
+	switch (_isHardwareSPI)
+	{
+		case 2: 
+			ERMCH1115_CS_SetHigh;
+			SPI_TRANSACTION_END;
+		break;
+		case 3: ERMCH1115_CS_SetHigh; break;
+	}
 	delay(ERMCH1115_INITDELAY);
 }
 
@@ -176,8 +200,14 @@ void ERMCH1115::OLEDReset ()
 */
 void ERMCH1115::OLEDEnable (uint8_t bits)
 {
-	if (isHardwareSPI()) {SPI_TRANSACTION_START}
-	ERMCH1115_CS_SetLow;
+	switch (_isHardwareSPI)
+	{
+		case 2: 
+			SPI_TRANSACTION_START;
+			ERMCH1115_CS_SetLow; 
+		break;
+		case 3: ERMCH1115_CS_SetLow; break;
+	}
 	if (bits)
 	{
 		_sleep= false;
@@ -187,8 +217,14 @@ void ERMCH1115::OLEDEnable (uint8_t bits)
 	 _sleep= true;
 	 send_command(ERMCH1115_DISPLAY_OFF, 0);
 	}
-	ERMCH1115_CS_SetHigh;
-	if (isHardwareSPI()) {SPI_TRANSACTION_END}
+	switch (_isHardwareSPI)
+	{
+		case 2: 
+			ERMCH1115_CS_SetHigh;
+			SPI_TRANSACTION_END;
+		break;
+		case 3: ERMCH1115_CS_SetHigh; break;
+	}
 }
 
 /*!
@@ -205,8 +241,14 @@ bool ERMCH1115::OLEDIssleeping() { return  _sleep ;}
 */
 void ERMCH1115::OLEDscrollSetup(uint8_t TimeInterval, uint8_t Direction, uint8_t mode)
 {
-	if (isHardwareSPI()) {SPI_TRANSACTION_START}
-	ERMCH1115_CS_SetLow;
+	switch (_isHardwareSPI)
+	{
+		case 2: 
+			SPI_TRANSACTION_START;
+			ERMCH1115_CS_SetLow; 
+		break;
+		case 3: ERMCH1115_CS_SetLow; break;
+	}
 
 	send_command(ERMCH1115_HORIZONTAL_A_SCROLL_SETUP, 0);
 	send_command(ERMCH1115_HORIZONTAL_A_SCROLL_SET_SCOL, 0);
@@ -219,8 +261,14 @@ void ERMCH1115::OLEDscrollSetup(uint8_t TimeInterval, uint8_t Direction, uint8_t
 
 	send_command(mode, 0);
 
-	ERMCH1115_CS_SetHigh;
-	if (isHardwareSPI()) {SPI_TRANSACTION_END}
+	switch (_isHardwareSPI)
+	{
+		case 2: 
+			ERMCH1115_CS_SetHigh;
+			SPI_TRANSACTION_END;
+		break;
+		case 3: ERMCH1115_CS_SetHigh; break;
+	}
 }
 
 /*!
@@ -230,11 +278,23 @@ void ERMCH1115::OLEDscrollSetup(uint8_t TimeInterval, uint8_t Direction, uint8_t
 */
 void ERMCH1115::OLEDscroll(uint8_t bits)
 {
-	if (isHardwareSPI()) {SPI_TRANSACTION_START}
-	ERMCH1115_CS_SetLow;
+	switch (_isHardwareSPI)
+	{
+		case 2: 
+			SPI_TRANSACTION_START;
+			ERMCH1115_CS_SetLow; 
+		break;
+		case 3: ERMCH1115_CS_SetLow; break;
+	}
 	bits ? send_command(ERMCH1115_ACTIVATE_SCROLL , 0) :   send_command(ERMCH1115_DEACTIVATE_SCROLL, 0);
-	ERMCH1115_CS_SetHigh;
-	if (isHardwareSPI()) {SPI_TRANSACTION_END}
+	switch (_isHardwareSPI)
+	{
+		case 2: 
+			ERMCH1115_CS_SetHigh;
+			SPI_TRANSACTION_END;
+		break;
+		case 3: ERMCH1115_CS_SetHigh; break;
+	}
 }
 
 /*!
@@ -244,12 +304,24 @@ void ERMCH1115::OLEDscroll(uint8_t bits)
 */
 void ERMCH1115::OLEDContrast(uint8_t contrast)
 {
-	if (isHardwareSPI()) {SPI_TRANSACTION_START}
-	ERMCH1115_CS_SetLow;
+	switch (_isHardwareSPI)
+	{
+		case 2: 
+			SPI_TRANSACTION_START;
+			ERMCH1115_CS_SetLow; 
+		break;
+		case 3: ERMCH1115_CS_SetLow; break;
+	}
 	send_command(ERMCH115_CONTRAST_CONTROL  ,0);
 	send_command(contrast, 0);
-	ERMCH1115_CS_SetHigh;
-	if (isHardwareSPI()) {SPI_TRANSACTION_END}
+	switch (_isHardwareSPI)
+	{
+		case 2: 
+			ERMCH1115_CS_SetHigh;
+			SPI_TRANSACTION_END;
+		break;
+		case 3: ERMCH1115_CS_SetHigh; break;
+	}
 }
 
 /*!
@@ -258,14 +330,26 @@ void ERMCH1115::OLEDContrast(uint8_t contrast)
 */
 void ERMCH1115::OLEDFlip(uint8_t  bits)
 {
-	if (isHardwareSPI()) {SPI_TRANSACTION_START}
-	ERMCH1115_CS_SetLow;
+	switch (_isHardwareSPI)
+	{
+		case 2: 
+			SPI_TRANSACTION_START;
+			ERMCH1115_CS_SetLow; 
+		break;
+		case 3: ERMCH1115_CS_SetLow; break;
+	}
 
 	bits ? send_command(ERMCH1115_COMMON_SCAN_DIR, 0x08):send_command(ERMCH1115_COMMON_SCAN_DIR, 0x00)  ; // C0H - C8H
 	bits ? send_command(ERMCH1115_SEG_SET_REMAP, 0x01):   send_command(ERMCH1115_SEG_SET_REMAP, 0x00); //(A0H - A1H)
 
-	ERMCH1115_CS_SetHigh;
-	if (isHardwareSPI()) {SPI_TRANSACTION_END}
+	switch (_isHardwareSPI)
+	{
+		case 2: 
+			ERMCH1115_CS_SetHigh;
+			SPI_TRANSACTION_END;
+		break;
+		case 3: ERMCH1115_CS_SetHigh; break;
+	}
 }
 
 /*!
@@ -280,27 +364,48 @@ void ERMCH1115::OLEDFlip(uint8_t  bits)
 */
 void ERMCH1115::OLEDfadeEffect(uint8_t bits)
 {
- if (isHardwareSPI()) {SPI_TRANSACTION_START}
- ERMCH1115_CS_SetLow;
- send_command(ERMCCH1115_BREATHEFFECT_SET,0);
- send_command(bits,0);
- ERMCH1115_CS_SetHigh;
- if (isHardwareSPI()) {SPI_TRANSACTION_END}
+	switch (_isHardwareSPI)
+	{
+		case 2: 
+			SPI_TRANSACTION_START;
+			ERMCH1115_CS_SetLow; 
+		break;
+		case 3: ERMCH1115_CS_SetLow; break;
+	}
+	send_command(ERMCCH1115_BREATHEFFECT_SET,0);
+	send_command(bits,0);
+	switch (_isHardwareSPI)
+	{
+		case 2: 
+			ERMCH1115_CS_SetHigh;
+			SPI_TRANSACTION_END;
+		break;
+		case 3: ERMCH1115_CS_SetHigh; break;
+	}
 }
 
 /*!
- @brief  Call when powering down OLED , disables OLED and sets all GPIO low.
+ @brief  Call when powering down OLED , disables OLED/SPI and sets all GPIO low.
 */
 void ERMCH1115::OLEDPowerDown(void)
 {
 	OLEDEnable(0);
-	ERMCH1115_CD_SetLow ;
-	ERMCH1115_RST_SetLow ;
-	ERMCH1115_CS_SetLow;
-	if(isHardwareSPI() == false)
+	
+	switch (_isHardwareSPI)
 	{
-		ERMCH1115_SCLK_SetLow;
-		ERMCH1115_SDA_SetLow ;
+		case 2:
+			SPI.end();
+			ERMCH1115_CD_SetLow ;
+			ERMCH1115_RST_SetLow ;
+			ERMCH1115_CS_SetLow;
+		break;
+		case 3:
+			ERMCH1115_CD_SetLow ;
+			ERMCH1115_RST_SetLow ;
+			ERMCH1115_CS_SetLow;
+			ERMCH1115_SCLK_SetLow;
+			ERMCH1115_SDA_SetLow ;
+		break;
 	}
 	_sleep= true;
 }
@@ -311,11 +416,23 @@ void ERMCH1115::OLEDPowerDown(void)
 */
 void ERMCH1115::OLEDInvert(uint8_t bits)
 {
-	if (isHardwareSPI()) {SPI_TRANSACTION_START}
-	ERMCH1115_CS_SetLow;
+	switch (_isHardwareSPI)
+	{
+		case 2: 
+			SPI_TRANSACTION_START;
+			ERMCH1115_CS_SetLow; 
+		break;
+		case 3: ERMCH1115_CS_SetLow; break;
+	}
 	bits ? send_command(ERMCH1115_DISPLAY_INVERT, 0) :   send_command(ERMCH1115_DISPLAY_NORMAL, 0);
-	ERMCH1115_CS_SetHigh;
-	if (isHardwareSPI()) {SPI_TRANSACTION_END}
+	switch (_isHardwareSPI)
+	{
+		case 2: 
+			ERMCH1115_CS_SetHigh;
+			SPI_TRANSACTION_END;
+		break;
+		case 3: ERMCH1115_CS_SetHigh; break;
+	}
 }
 
 /*!
@@ -325,7 +442,7 @@ void ERMCH1115::OLEDInvert(uint8_t bits)
 */
 void ERMCH1115::OLEDFillScreen(uint8_t dataPattern, uint8_t delay)
 {
-	for (uint8_t row = 0; row < (ERMCH1115_SCREEN_HEIGHT/8); row++)
+	for (uint8_t row = 0; row < (_HeightScreen/8); row++)
 	{
 		OLEDFillPage(row,dataPattern,delay);
 	}
@@ -339,22 +456,34 @@ void ERMCH1115::OLEDFillScreen(uint8_t dataPattern, uint8_t delay)
 */
 void ERMCH1115::OLEDFillPage(uint8_t pageNum, uint8_t dataPattern,uint8_t mydelay)
 {
-	if (isHardwareSPI()) {SPI_TRANSACTION_START}
-	ERMCH1115_CS_SetLow;
+	switch (_isHardwareSPI)
+	{
+		case 2: 
+			SPI_TRANSACTION_START;
+			ERMCH1115_CS_SetLow; 
+		break;
+		case 3: ERMCH1115_CS_SetLow; break;
+	}
 	send_command(ERMCH1115_SET_COLADD_LSB, 0);
 	send_command(ERMCH1115_SET_COLADD_MSB, 0);
 	send_command(ERMCH1115_SET_PAGEADD, pageNum);
 	ERMCH1115_CS_SetHigh;
 	delayMicroseconds(2);
 	ERMCH1115_CS_SetLow;
-	uint8_t numofbytes = ERMCH1115_SCREEN_WIDTH; // 128 bytes
+	uint8_t numofbytes = _WidthScreen; // 128 bytes
 	for (uint8_t i = 0; i < numofbytes; i++)
 	{
 		send_data(dataPattern);
 		delay(mydelay);
 	}
-	ERMCH1115_CS_SetHigh;
-	if (isHardwareSPI()) {SPI_TRANSACTION_END}
+	switch (_isHardwareSPI)
+	{
+		case 2: 
+			ERMCH1115_CS_SetHigh;
+			SPI_TRANSACTION_END;
+		break;
+		case 3: ERMCH1115_CS_SetHigh; break;
+	}
 }
 
 /*!
@@ -364,15 +493,32 @@ void ERMCH1115::OLEDFillPage(uint8_t pageNum, uint8_t dataPattern,uint8_t mydela
 	 @param w width 0-128
 	 @param h height 0-64
 	 @param data  pointer to the bitmap must be in PROGMEM
+	 @return CH1115_Return_Codes_e enum
 */
-void ERMCH1115::OLEDBitmap(int16_t x, int16_t y, uint8_t w, uint8_t h, const uint8_t* data)
+CH1115_Return_Codes_e ERMCH1115::OLEDBitmap(int16_t x, int16_t y, uint8_t w, uint8_t h, const uint8_t* data)
 {
+// User error checks
+// 1. bitmap is null
+if (data == nullptr){return CH1115_BitmapNullptr ;}
+// 2. Start point Completely out of bounds
+if (x > _width || y > _height){return CH1115_BitmapScreenBounds;}
+// 3. bitmap weight and height
+if (w > _width || h > _height){return CH1115_BitmapLargerThanScreen ;}
+// 4A.check vertical bitmap h must be divisible
+if((h % 8 != 0)){return CH1115_BitmapVerticalSize;}
+
  #if defined(ESP8266)
 	// ESP8266 needs a periodic yield() call to avoid watchdog reset.
 	yield();
 #endif
- if (isHardwareSPI()) {SPI_TRANSACTION_START}
- ERMCH1115_CS_SetLow;
+	switch (_isHardwareSPI)
+	{
+		case 2: 
+			SPI_TRANSACTION_START;
+			ERMCH1115_CS_SetLow; 
+		break;
+		case 3: ERMCH1115_CS_SetLow; break;
+	}
 
 	uint8_t tx, ty;
 	uint16_t offset = 0;
@@ -381,33 +527,32 @@ void ERMCH1115::OLEDBitmap(int16_t x, int16_t y, uint8_t w, uint8_t h, const uin
 
 	for (ty = 0; ty < h; ty = ty + 8)
 	{
-		if (y + ty < 0 || y + ty >= ERMCH1115_SCREEN_HEIGHT) {continue;}
+		if (y + ty < 0 || y + ty >= _HeightScreen) {continue;}
 		send_command(ERMCH1115_SET_COLADD_LSB, (column & 0x0F));
 		send_command(ERMCH1115_SET_COLADD_MSB, (column & 0xF0) >> 4);
 		send_command(ERMCH1115_SET_PAGEADD, page++);
 
 		for (tx = 0; tx < w; tx++)
 		{
-				if (x + tx < 0 || x + tx >= ERMCH1115_SCREEN_WIDTH) {continue;}
+				if (x + tx < 0 || x + tx >= _WidthScreen) {continue;}
 				offset = (w * (ty >> 3)) + tx;
 				send_data(pgm_read_byte(&data[offset]));
 		}
 	}
-ERMCH1115_CS_SetHigh;
-if (isHardwareSPI()) {SPI_TRANSACTION_END}
+	switch (_isHardwareSPI)
+	{
+		case 2: 
+			ERMCH1115_CS_SetHigh;
+			SPI_TRANSACTION_END;
+		break;
+		case 3: ERMCH1115_CS_SetHigh; break;
+	}
 #if defined(ESP8266)
 	yield();
 #endif
+return CH1115_Success;
 }
 
-/*!
-	 @brief Checks if software SPI is on
-	 @returns true 1 if hardware SPi on , false 0 for software spi
-*/
-bool ERMCH1115::isHardwareSPI()
-{
-	return (_OLED_DIN == -1 && _OLED_SCLK == -1);
-}
 
 /*!
 	 @brief used in software SPI mode to shift out data
@@ -426,9 +571,9 @@ void ERMCH1115::CustomshiftOut(uint8_t bitOrder, uint8_t value)
 			!!(value & (1 << (7 - i))) ? ERMCH1115_SDA_SetHigh : ERMCH1115_SDA_SetLow ;
 
 		ERMCH1115_SCLK_SetHigh;
-		delayMicroseconds(ERMCH1115_HIGHFREQ_DELAY); // optional, for high freq MCU
+		delayMicroseconds(_HighFreqDelay); // optional, for high freq MCU
 		ERMCH1115_SCLK_SetLow;
-		delayMicroseconds(ERMCH1115_HIGHFREQ_DELAY);
+		delayMicroseconds(_HighFreqDelay);
 	}
 }
 
@@ -438,12 +583,10 @@ void ERMCH1115::CustomshiftOut(uint8_t bitOrder, uint8_t value)
 */
 void ERMCH1115::send_data(uint8_t byte)
 {
-	if (isHardwareSPI())
+	switch (_isHardwareSPI)
 	{
-	(void)SPI.transfer(byte);
-	}else
-	{
-	CustomshiftOut(MSBFIRST, byte); // README note 21
+		case 2 :   (void)SPI.transfer(byte); break; 
+		case 3 :  CustomshiftOut(MSBFIRST, byte); break; 
 	}
 }
 
@@ -477,8 +620,14 @@ void ERMCH1115::OLEDBuffer(int16_t x, int16_t y, uint8_t w, uint8_t h, uint8_t* 
  #if defined(ESP8266)
 	yield();
 #endif
- if (isHardwareSPI()) {SPI_TRANSACTION_START}
- ERMCH1115_CS_SetLow;
+	switch (_isHardwareSPI)
+	{
+		case 2: 
+			SPI_TRANSACTION_START;
+			ERMCH1115_CS_SetLow; 
+		break;
+		case 3: ERMCH1115_CS_SetLow; break;
+	}
 
 	uint8_t tx, ty;
 	uint16_t offset = 0;
@@ -487,7 +636,7 @@ void ERMCH1115::OLEDBuffer(int16_t x, int16_t y, uint8_t w, uint8_t h, uint8_t* 
 
 	for (ty = 0; ty < h; ty = ty + 8)
 	{
-	if (y + ty < 0 || y + ty >= ERMCH1115_SCREEN_HEIGHT) {continue;}
+	if (y + ty < 0 || y + ty >= _HeightScreen) {continue;}
 
 	send_command(ERMCH1115_SET_COLADD_LSB, (column & 0x0F));
 	send_command(ERMCH1115_SET_COLADD_MSB, (column & 0XF0) >> 4);
@@ -495,15 +644,21 @@ void ERMCH1115::OLEDBuffer(int16_t x, int16_t y, uint8_t w, uint8_t h, uint8_t* 
 
 	for (tx = 0; tx < w; tx++)
 	{
-			if (x + tx < 0 || x + tx >= ERMCH1115_SCREEN_WIDTH) {continue;}
+			if (x + tx < 0 || x + tx >= _WidthScreen) {continue;}
 			offset = (w * (ty /8)) + tx;
 			send_data(data[offset++]);
 	}
 	}
 
 
-ERMCH1115_CS_SetHigh;
-if (isHardwareSPI()) {SPI_TRANSACTION_END}
+	switch (_isHardwareSPI)
+	{
+		case 2: 
+			ERMCH1115_CS_SetHigh;
+			SPI_TRANSACTION_END;
+		break;
+		case 3: ERMCH1115_CS_SetHigh; break;
+	}
 #if defined(ESP8266)
 	yield();
 #endif
@@ -521,14 +676,50 @@ void ERMCH1115::drawPixel(int16_t x, int16_t y, uint8_t colour)
 	if ((x < 0) || (x >= this->ActiveBufferPtr->width) || (y < 0) || (y >= this->ActiveBufferPtr->height)) {
 	return;
 	}
-		uint16_t offset = (this->ActiveBufferPtr->width * (y/8)) + x;
-		switch (colour)
-		{
+	// Check rotation 
+	int16_t temp;
+	uint8_t RotateMode = getRotation();
+	switch (RotateMode) {
+	case 1:
+		temp = x;
+		x = WIDTH - 1 - y;
+		y = temp;
+	break;
+	case 2:
+		x = WIDTH - 1 - x;
+		y = HEIGHT - 1 - y;
+	break;
+	case 3:
+		temp = x;
+		x = y;
+		y = HEIGHT - 1 - temp;
+	break;
+	}
+	uint16_t offset = (this->ActiveBufferPtr->width * (y/8)) + x;
+	switch (colour)
+	{
 		case OLED_WHITE: this->ActiveBufferPtr->screenBuffer[offset] |= (1 << (y & 7)); break;
 		case OLED_BLACK: this->ActiveBufferPtr->screenBuffer[offset] &= ~(1 << (y & 7)); break;
 		case OLED_INVERSE : this->ActiveBufferPtr->screenBuffer[offset] ^= (1 << (y & 7)); break;
-		}
+	}
 
 }
 
+/*!
+	@brief Library version number getter
+	@return The lib version number eg 180 = 1.8.0
+*/
+uint16_t ERMCH1115::OLEDLibVerNumGet(void) {return _LibVersionNum;}
+
+/*!
+	@brief Freq delay used in SW SPI getter, uS delay used in SW SPI method
+	@return The  GPIO communications delay in uS
+*/
+uint16_t ERMCH1115::OLEDHighFreqDelayGet(void){return _HighFreqDelay;}
+
+/*!
+	@brief Freq delay used in SW SPI setter, uS delay used in SW SPI method
+	@param CommDelay The GPIO communications delay in uS
+*/
+void  ERMCH1115::OLEDHighFreqDelaySet(uint16_t CommDelay){_HighFreqDelay = CommDelay;}
 //  == EOF ==

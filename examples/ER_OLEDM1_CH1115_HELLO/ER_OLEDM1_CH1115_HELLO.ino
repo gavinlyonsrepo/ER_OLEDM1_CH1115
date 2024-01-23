@@ -3,7 +3,7 @@
 	@brief Example file for ER_OLEDM1_CH1115 library, showing use of hello world
 	URL: https://github.com/gavinlyonsrepo/ER_OLEDM1_CH1115
 	@test 
-		Hello world
+		-# 0 Hello world
 	@note 
 		-# GPIO is for arduino UNO for other tested MCU see readme.
 		-#  This is for hardware SPI for software SPI see ER_OLEDM1_CH1115_SWSPI.ino example.
@@ -24,17 +24,19 @@
 // Buffer setup
 #define MYOLEDHEIGHT 64
 #define MYOLEDWIDTH 128
+#define FULLSCREEN (MYOLEDWIDTH  * (MYOLEDHEIGHT / 8))
 // Define a Buffer
-uint8_t  screenBuffer[MYOLEDWIDTH  * (MYOLEDHEIGHT / 8)]; 
+uint8_t screenBuffer[FULLSCREEN]; 
 // instantiate an OLED object
-ERMCH1115  myOLED(DC, RES, CS); 
+ERMCH1115 myOLED(MYOLEDWIDTH, MYOLEDHEIGHT, DC, RES, CS); 
 // instantiate an Shared buffer object , only one in this case to cover whole screen
 ERMCH1115_SharedBuffer fullScreen(screenBuffer, MYOLEDWIDTH, MYOLEDHEIGHT, 0, 0);
+
 
 void setup() {
   myOLED.OLEDbegin(OLEDcontrast); // initialize the OLED
   myOLED.setTextColor(OLED_WHITE);
-  myOLED.setFontNum(myOLED.OLEDFontType_Default);
+  myOLED.setFontNum(CH1115Font_Default);
   myOLED.OLEDFillScreen(0x00, 0);
   myOLED.ActiveBufferPtr = &fullScreen;  // Assign Screen to be the active buffer pointer
   myOLED.OLEDclearBuffer();   
