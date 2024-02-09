@@ -54,7 +54,7 @@ Output Screenshots, From left to right, top to bottom.
 8. Font 7
 
 ![ url output image ](https://github.com/gavinlyonsrepo/ER_OLEDM1_CH1115/blob/main/extras/image/output.jpg)
-![ url output image 2 ](https://github.com/gavinlyonsrepo/ER_OLEDM1_CH1115_RPI/blob/main/extras/image/fontpic.jpg)
+![ url output image 2 ](https://github.com/gavinlyonsrepo/ER_OLEDM1_CH1115/blob/main/extras/image/fontpic.jpg)
 
 ## Installation
 
