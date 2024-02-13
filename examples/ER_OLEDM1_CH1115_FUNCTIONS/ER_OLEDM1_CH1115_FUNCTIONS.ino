@@ -169,14 +169,18 @@ void DisplayMiscTests()
   
   myOLED.OLEDclearBuffer();
   myOLED.setCursor(5, 30);
-  myOLED.print("rotate Buffer test 307");
+  myOLED.println("rotate Buffer");
+  myOLED.print("test 307");
   myOLED.OLEDupdate();
   delay(DisplayDelay2);
   myOLED.OLEDclearBuffer();
 
-  myOLED.setCursor(5, 5);
+  
   myOLED.setRotation(CH1115_Degrees_0);
+  myOLED.setCursor(5, 5);
   myOLED.print("rotate 0");
+  myOLED.setCursor(5, 50);
+  myOLED.print("bottom       !");
   myOLED.OLEDupdate();
   delay(DisplayDelay5);
   myOLED.OLEDclearBuffer();
@@ -184,6 +188,8 @@ void DisplayMiscTests()
   myOLED.setRotation(CH1115_Degrees_90);
   myOLED.setCursor(5, 5);
   myOLED.print("rotate 90");
+  myOLED.setCursor(5, 110);
+  myOLED.print("bottom  !");
   myOLED.OLEDupdate();
   delay(DisplayDelay5);
   myOLED.OLEDclearBuffer();
@@ -191,6 +197,8 @@ void DisplayMiscTests()
   myOLED.setRotation(CH1115_Degrees_180);
   myOLED.setCursor(5, 5);
   myOLED.print("rotate 180");
+  myOLED.setCursor(5, 50);
+  myOLED.print("bottom       !");
   myOLED.OLEDupdate();
   delay(DisplayDelay5);
   myOLED.OLEDclearBuffer();
@@ -198,13 +206,16 @@ void DisplayMiscTests()
   myOLED.setRotation(CH1115_Degrees_270);
   myOLED.setCursor(5, 5);
   myOLED.print("rotate    270");
+  myOLED.setCursor(5, 110);
+  myOLED.print("bottom  !");
   myOLED.OLEDupdate();
   delay(DisplayDelay5);
+
   myOLED.setRotation(CH1115_Degrees_0); //back to normal rotation
   myOLED.OLEDclearBuffer();
 
   myOLED.OLEDclearBuffer();
-  myOLED.setCursor(5, 5);
+  myOLED.setCursor(15, 25);
   myOLED.print("End of tests!");
   myOLED.OLEDupdate();
   delay(DisplayDelay5);

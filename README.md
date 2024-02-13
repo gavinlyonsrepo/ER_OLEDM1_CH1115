@@ -21,8 +21,8 @@
 	* [Files](#files)
   * [Tested_MCU](#tested_MCU)
 
-Overview
---------------------
+## Overview
+
 * Name : ER_OLEDM1_CH1115
 * Title : Library to support the ER-OLEDM1.09-1  OLED Display Module driven by the CH1115 controller for the Arduino eco-system.
 * Description : 
@@ -57,7 +57,6 @@ Output Screenshots, From left to right, top to bottom.
 ![ url output image 2 ](https://github.com/gavinlyonsrepo/ER_OLEDM1_CH1115/blob/main/extras/image/fontpic.jpg)
 
 ## Installation
-
 
 The library is included in the official Arduino library manger and the optimum way to install it is 
 using the library manager which can be opened by the *manage libraries* option in Arduino IDE. 

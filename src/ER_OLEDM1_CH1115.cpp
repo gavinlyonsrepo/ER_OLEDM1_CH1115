@@ -595,7 +595,7 @@ void ERMCH1115::send_data(uint8_t byte)
 */
 void ERMCH1115::OLEDupdate()
 {
-	 OLEDBuffer( this->ActiveBufferPtr->xoffset, this->ActiveBufferPtr->yoffset, this->ActiveBufferPtr->width, this->ActiveBufferPtr->height, (uint8_t*) this->ActiveBufferPtr->screenBuffer);
+	 OLEDBuffer( this->ActiveBufferPtr->xoffset, this->ActiveBufferPtr->yoffset, this->ActiveBufferPtr->width, this->ActiveBufferPtr->height,  this->ActiveBufferPtr->screenBuffer);
 }
 
 /*!
@@ -672,10 +672,12 @@ void ERMCH1115::OLEDBuffer(int16_t x, int16_t y, uint8_t w, uint8_t h, uint8_t* 
 */
 void ERMCH1115::drawPixel(int16_t x, int16_t y, uint8_t colour)
 {
-
-	if ((x < 0) || (x >= this->ActiveBufferPtr->width) || (y < 0) || (y >= this->ActiveBufferPtr->height)) {
-	return;
-	}
+	// Boundary Scan for active buffer 
+	//if ((x < 0) || (x >= this->ActiveBufferPtr->width) || (y < 0) || (y >= this->ActiveBufferPtr->height) )
+	//{return;}
+	// Boundary Scan  entire screen as per setRotation.
+	if ((x < 0) || (x >= _width) || (y < 0) || (y >= _height) )
+		{return;}
 	// Check rotation 
 	int16_t temp;
 	uint8_t RotateMode = getRotation();
@@ -695,6 +697,7 @@ void ERMCH1115::drawPixel(int16_t x, int16_t y, uint8_t colour)
 		y = HEIGHT - 1 - temp;
 	break;
 	}
+	// Draw the pixel
 	uint16_t offset = (this->ActiveBufferPtr->width * (y/8)) + x;
 	switch (colour)
 	{

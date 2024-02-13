@@ -107,7 +107,7 @@ void display_Left(long currentFramerate, int count)
   myOLED.print(" fps");
   myOLED.setCursor(0, 50);
   myOLED.print(myOLED.OLEDLibVerNumGet());
-  myOLED.drawFastVLine(92, 0, 63, OLED_WHITE);
+  myOLED.drawFastVLine(62, 0, 63, OLED_WHITE);
   myOLED.OLEDupdate();
 }
 

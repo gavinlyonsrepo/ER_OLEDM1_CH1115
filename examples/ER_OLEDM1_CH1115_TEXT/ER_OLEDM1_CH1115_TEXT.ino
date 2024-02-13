@@ -81,7 +81,7 @@ void loop()
   DisplayText();      // Tests 1-8
   DisplayFonts();     // Tests 9-13
   DisplayFontsTwo();  // Tests 14-19
-  ErrorChecking();    // Test 20
+  // ErrorChecking();    // Test 20
   myOLED.OLEDPowerDown(); // Turn off DISPLAY when tests over
   Serial.println("OLED END!");
   while (1) {delay(100);};
