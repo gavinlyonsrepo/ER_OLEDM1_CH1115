@@ -37,3 +37,6 @@
 	* PROGMEM keyword added to font 12(which was added in 1.4.0
 	* DrawPixel method boundary scan adjusted so 90 and 270 degree rotation is 
 		calibrated for whole screen not shared screen mode.
+* Version 1.4.2 June 2024 
+	* Minor update. Add back in pgm_read_byte command as it was removed on last update
+	so library works fully with UNO rev3.0

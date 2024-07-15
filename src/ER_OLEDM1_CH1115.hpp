@@ -187,7 +187,7 @@ class ERMCH1115 : public ERMCH1115_graphics  {
 	bool _sleep = true; /**< False awake/ON , true sleep/OFF */
 	uint8_t _OLEDcontrast = 0x80; /**< Contrast default 0x80 datasheet 00-FF */
 	uint16_t _HighFreqDelay =  ERMCH1115_HIGHFREQ_DELAY; /**< uS GPIO Communications delay, SW SPI ONLY */
-	 const uint16_t _LibVersionNum = 141; /**< Library version number 180 = 1.8.0*/
+	 const uint16_t _LibVersionNum = 142; /**< Library version number 180 = 1.8.0*/
 	 uint8_t _WidthScreen = 128; /**< Width of screen in pixels */
 	 uint8_t _HeightScreen = 64;  /**< Height of screen in pixels */
 
