@@ -161,7 +161,10 @@ There is a few different ways of displaying bitmaps,
 | 5 | drawBitmap() |  Horizontal | setDrawBitmapAddr(false) |
 
 The drawBitmap function will return an enum with an error code if an error occurs see API  docs.
-See the bitmap example file for more details on each method. Bitmaps can be turned to data [here at link]( https://javl.github.io/image2cpp/) .
+For a bitmap with horizontally addressed data, the width must be divisible evenly by 8.
+For a bitmap with vertically addressed data, the height must be divisible evenly by 8.
+See the bitmap example file for more details on each method. 
+Bitmaps can be turned to data [here at link]( https://javl.github.io/image2cpp/) .
 
 ### User adjustments
 
